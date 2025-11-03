@@ -1,8 +1,8 @@
 
-import 'package:cryptopoker/welcome_screen.dart';
-import 'package:cryptopoker/dashboard_view.dart';
-import 'package:cryptopoker/game_variant_selection.dart';
-import 'package:cryptopoker/lets_play_screen.dart';
+import 'package:cryptopoker/screen/welcome_screen.dart';
+import 'package:cryptopoker/screen/dashboard/dashboard_view.dart';
+import 'package:cryptopoker/screen/game_variant_selection.dart';
+import 'package:cryptopoker/screen/lets_play_screen.dart';
 import 'package:cryptopoker/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

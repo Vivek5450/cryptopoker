@@ -1,5 +1,5 @@
-import 'package:cryptopoker/dashboard_view.dart';
-import 'package:cryptopoker/lets_play_screen.dart';
+import 'package:cryptopoker/screen/dashboard/dashboard_view.dart';
+import 'package:cryptopoker/screen/lets_play_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';

@@ -14,6 +14,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   final player5Packed = false.obs;
   RxBool timerActive = false.obs;
 
+  RxInt currentRound = 1.obs;
   final chipProgress = 0.0.obs;
   final dealProgress = 0.0.obs;
   final flipProgress = 0.0.obs;
@@ -28,6 +29,9 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   late Timer _dealTimer;
   late Timer _flipTimer;
   late Timer _packTimer;
+
+  RxList<bool> playerFolded = List.generate(6, (_) => false).obs;
+  RxList<bool> playerPacked = List.generate(6, (_) => false).obs;
 
   late AnimationController zoomController;
   late Animation<double> zoomAnimation;
@@ -117,20 +121,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   }
 
   void packPlayer5() {
-    if (player5Packed.value) return;
-    play('cards_flip.mp3');
-    player5Packed.value = true;
-
-    _packTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
-      packProgress.value += 0.05;
-      if (packProgress.value >= 1.0) {
-        packProgress.value = 1.0;
-        timer.cancel();
-        Future.delayed(const Duration(milliseconds: 200), () {
-          player5Revealed.value = false;
-        });
-      }
-    });
+    foldPlayer(4);
   }
 
   List<Offset> playerPositions(Size size) {
@@ -192,9 +183,65 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
 
   void moveToNextPlayer() {
     final currentIndex = clockwiseOrder.indexOf(activePlayerIndex.value);
-    final nextIndex = (currentIndex + 1) % clockwiseOrder.length;
+    int nextIndex = (currentIndex + 1) % clockwiseOrder.length;
+    while (playerFolded[clockwiseOrder[nextIndex]]) {
+      nextIndex = (nextIndex + 1) % clockwiseOrder.length;
+      if (playerFolded.where((f) => !f).length <= 1) {
+        endRound();
+        return;
+      }
+      if (nextIndex == currentIndex) break;
+    }
     activePlayerIndex.value = clockwiseOrder[nextIndex];
     startTurn(activePlayerIndex.value);
+  }
+  void foldPlayer(int index) {
+    if (index < 0 || index >= totalPlayers) return;
+    if (playerFolded[index]) return;
+
+    playerFolded[index] = true;
+    playerPacked[index] = true; // 👈 hide cards too
+    play('cards_flip.mp3');
+    debugPrint("Player $index folded");
+
+    if (activePlayerIndex.value == index) {
+      moveToNextPlayer();
+    }
+  }
+
+
+
+  void endRound() {
+    timerActive.value = false;
+    zoomController.stop();
+    //play('winner.mp3'); // optional: add a win sound
+    potShown.value = false;
+    Get.snackbar(
+      "Round ${currentRound.value}",
+      "Winner: Player ${Random().nextInt(totalPlayers) + 1}",
+      colorText: Colors.yellowAccent,
+      backgroundColor: Colors.black54,
+      snackPosition: SnackPosition.TOP,
+    );
+
+    Future.delayed(const Duration(seconds: 3), resetRound);
+  }
+
+  void resetRound() {
+    currentRound.value++;
+    countdown.value = 5;
+    chipProgress.value = 0;
+    dealProgress.value = 0;
+    flipProgress.value = 0;
+    packProgress.value = 0;
+    player5Revealed.value = false;
+    player5Packed.value = false;
+    potShown.value = false;
+    chipsLaid.value = false;
+    cardsDealt.value = false;
+
+    showCountdown.value = true;
+    startCountdown(); // restart the whole cycle
   }
 
   void resetTimer() {
