@@ -14,6 +14,11 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   final player5Packed = false.obs;
   RxBool timerActive = false.obs;
 
+  final RxDouble potValue = 0.0.obs;           // total pot amount
+  final RxDouble betChipProgress = 0.0.obs;    // controls chip animation
+  final RxBool isChipAnimating = false.obs;    // prevent multiple animations
+  final RxDouble currentBet = 0.0.obs;
+
   RxInt currentRound = 1.obs;
   final chipProgress = 0.0.obs;
   final dealProgress = 0.0.obs;
@@ -74,20 +79,31 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   void startChips() {
     chipsLaid.value = true;
     play('chips_collect.mp3');
+    potShown.value = false; // hide pot during chip movement
+    potValue.value = 0.0;   // reset before collecting
 
     _chipTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       chipProgress.value += 0.025;
       if (chipProgress.value >= 1.0) {
         chipProgress.value = 1.0;
         timer.cancel();
-        Future.delayed(const Duration(milliseconds: 200), () {
+
+        // 💰 After chip collection finishes, add $20 from each player
+        const double chipAmountPerPlayer = 20.0;
+        potValue.value = totalPlayers * chipAmountPerPlayer;
+
+        // 🕐 Add a small delay for realism before showing the pot
+        Future.delayed(const Duration(milliseconds: 300), () {
           chipsLaid.value = false;
           potShown.value = true;
+
+          // Continue to next step after a small pause
           Future.delayed(const Duration(milliseconds: 400), startDeal);
         });
       }
     });
   }
+
 
   void startDeal() {
     cardsDealt.value = true;
@@ -207,6 +223,31 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     if (activePlayerIndex.value == index) {
       moveToNextPlayer();
     }
+  }
+  void bet(int playerIndex, double amount) {
+    if (isChipAnimating.value || playerFolded[playerIndex]) return;
+
+    currentBet.value = amount;
+    isChipAnimating.value = true;
+    play('chips_collect.mp3');
+
+    betChipProgress.value = 0.0;
+
+    // Animate chips from player → pot
+    _chipTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      betChipProgress.value += 0.04;
+      if (betChipProgress.value >= 1.0) {
+         betChipProgress.value = 1.0;
+        timer.cancel();
+        potValue.value += amount;
+        isChipAnimating.value = false;
+        moveToNextPlayer();
+      }
+    });
+  }
+
+  void raiseBet(int playerIndex, double amount) {
+    bet(playerIndex, amount); // for now, same animation but higher amount
   }
 
 

@@ -80,6 +80,32 @@ class PlayerCards extends StatelessWidget {
                 onTap: controller.revealPlayer5,
               ),
             ),
+          // 🎯 Bet / Raise buttons (only show if it's Player 5’s turn)
+          if (controller.activePlayerIndex.value == 4 &&
+              !controller.playerFolded[4] &&
+              controller.player5Revealed.value)
+            Positioned(
+              left: cards[4].dx + cardWidth / 2 + 55,
+              top: cards[4].dy + 30,
+              child: Row(
+                children: [
+                  ActionButton(
+                    label: "Bet",
+                    color: Colors.green,
+                    textColor: Colors.white,
+                    onTap: () => controller.bet(4, 100), // static 100 for now
+                  ),
+                  const SizedBox(width: 10),
+                  ActionButton(
+                    label: "Raise",
+                    color: Colors.orange,
+                    textColor: Colors.white,
+                    onTap: () => controller.raiseBet(4, 200), // static 200 for now
+                  ),
+                ],
+              ),
+            ),
+
         ],
       );
     });

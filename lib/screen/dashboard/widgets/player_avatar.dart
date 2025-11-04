@@ -2,6 +2,7 @@ import 'package:cryptopoker/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 class PlayerAvatar extends StatelessWidget {
   final int index;
   final Offset position;
