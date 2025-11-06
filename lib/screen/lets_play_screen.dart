@@ -1,6 +1,7 @@
 
 import 'dart:math';
 
+import 'package:cryptopoker/test_scoket_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -81,7 +82,8 @@ class _LetPlayViewState extends State<LetPlayView> with SingleTickerProviderStat
             setState(() => _isLoading = true);
             // simulate loading then navigate
             Future.delayed(const Duration(seconds: 3), () {
-              Get.offNamed('/dashboard');
+             Get.offNamed('/dashboard');
+
             });
           },
           child: Container(
@@ -150,28 +152,4 @@ class _LetPlayViewState extends State<LetPlayView> with SingleTickerProviderStat
       ],
     );
   }
-}
-
-
-
-// Add this inside _LetPlayViewState class (after _buildLoading):
-List<Widget> _floatingCards(Size size) {
-  final random = Random();
-  return List.generate(5, (index) {
-    final left = random.nextDouble() * size.width;
-    final top = random.nextDouble() * size.height;
-    final duration = Duration(seconds: 5 + random.nextInt(5));
-    return AnimatedPositioned(
-      duration: duration,
-      left: left,
-      top: top,
-      child: Opacity(
-        opacity: 0.3,
-        child: Text(
-          ['♠','♥','♦','♣'][random.nextInt(4)],
-          style: TextStyle(fontSize: 48, color: Colors.white70, fontFamily: 'CormorantGaramond'),
-        ),
-      ),
-    );
-  });
 }

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cryptopoker/core/network/scoket_service.dart';
+import 'package:cryptopoker/token_storage/token_storage.dart';
 import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -41,9 +43,13 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   late AnimationController zoomController;
   late Animation<double> zoomAnimation;
 
+  final SocketService socketService = SocketService();
+
+
   @override
   void onInit() {
     super.onInit();
+    connectSocket();
     startCountdown();
     zoomController = AnimationController(
       vsync: this,
@@ -305,8 +311,25 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     _dealTimer.cancel();
     _flipTimer.cancel();
     _packTimer.cancel();
+    socketService.close();
     audio.dispose();
     zoomController.dispose();
     super.onClose();
   }
+
+  Future<void> connectSocket() async {
+    final token = await TokenStorage.getToken();
+
+    await socketService.initSocket(
+      'ws://157.245.212.69/ws', // your backend socket endpoint
+      query: {'token': token},
+    );
+
+
+  }
+
+  void sendMessage(dynamic data) {
+    socketService.send(data);
+  }
+
 }

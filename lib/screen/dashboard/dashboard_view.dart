@@ -7,9 +7,14 @@ import 'widgets/dealer_badge.dart';
 import 'widgets/player_avatar.dart';
 import 'widgets/player_cards.dart';
 
-class DashboardView extends StatelessWidget {
+class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
 
+  @override
+  State<DashboardView> createState() => _DashboardViewState();
+}
+
+class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(DashboardController());
