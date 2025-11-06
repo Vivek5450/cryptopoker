@@ -251,6 +251,12 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   }
 
 
+  void check(int playerIndex) {
+    if (playerFolded[playerIndex]) return;
+    play('check_tap.m4a'); // 👂 play a subtle sound for check
+    debugPrint("Player $playerIndex checked");
+    moveToNextPlayer();
+  }
 
   void endRound() {
     timerActive.value = false;

@@ -1,4 +1,3 @@
-
 import 'dart:math';
 import 'package:cryptopoker/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,8 @@ class PlayerCards extends StatelessWidget {
             );
             final pos2 = Offset(pos1.dx + cardWidth * 0.6, pos1.dy);
 
-            bool showFront = i == 4 && controller.player5Revealed.value;
+            // 👇 Player 4's cards are always revealed
+            bool showFront = (i == 4);
 
             return Stack(
               children: [
@@ -61,29 +61,10 @@ class PlayerCards extends StatelessWidget {
             );
           }),
 
-          // 🎯 See / Fold button (for Player 5 only)
-          if (!controller.playerFolded[4] && !controller.playerPacked[4])
-            Positioned(
-              left: cards[4].dx + cardWidth / 2 + 50,
-              top: cards[4].dy + 80,
-              child: controller.player5Revealed.value
-                  ? ActionButton(
-                label: "Fold",
-                color: Colors.redAccent,
-                textColor: Colors.white,
-                onTap: controller.packPlayer5,
-              )
-                  : ActionButton(
-                label: "See",
-                color: Colors.white,
-                textColor: Colors.black,
-                onTap: controller.revealPlayer5,
-              ),
-            ),
-          // 🎯 Bet / Raise buttons (only show if it's Player 5’s turn)
+          // 🎯 Only Fold / Bet / Check for Player 4
           if (controller.activePlayerIndex.value == 4 &&
               !controller.playerFolded[4] &&
-              controller.player5Revealed.value)
+              !controller.playerPacked[4])
             Positioned(
               left: cards[4].dx + cardWidth / 2 + 55,
               top: cards[4].dy + 30,
@@ -93,19 +74,25 @@ class PlayerCards extends StatelessWidget {
                     label: "Bet",
                     color: Colors.green,
                     textColor: Colors.white,
-                    onTap: () => controller.bet(4, 100), // static 100 for now
+                    onTap: () => controller.bet(4, 100), // static 100
                   ),
                   const SizedBox(width: 10),
                   ActionButton(
-                    label: "Raise",
+                    label: "Check",
                     color: Colors.orange,
                     textColor: Colors.white,
-                    onTap: () => controller.raiseBet(4, 200), // static 200 for now
+                    onTap: () => controller.check(4),
+                  ),
+                  const SizedBox(width: 10),
+                  ActionButton(
+                    label: "Fold",
+                    color: Colors.redAccent,
+                    textColor: Colors.white,
+                    onTap: controller.packPlayer5,
                   ),
                 ],
               ),
             ),
-
         ],
       );
     });
