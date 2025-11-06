@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:cryptopoker/auth/register_screen.dart';
+import 'package:cryptopoker/screen/auth/register_screen.dart';
 import 'package:cryptopoker/controller/auth_controller.dart';
 import 'package:cryptopoker/progress_loader.dart';
 import 'package:flutter/material.dart';

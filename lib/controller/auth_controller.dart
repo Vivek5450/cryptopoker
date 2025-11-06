@@ -30,6 +30,8 @@ RxBool isLoading = false.obs;
         await TokenStorage.saveTokens(data.token ?? '', data.refreshToken ?? '');
         await TokenStorage.saveUser(data.toJson());
         debugPrint("✅ Login successful for: ${data.username}");
+
+        Get.offAllNamed('/letsplay');
       } else {
         debugPrint("❌ Login failed: ${loginResponse.message}");
       }

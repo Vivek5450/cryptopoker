@@ -1,11 +1,28 @@
-import 'package:cryptopoker/auth/login_screen.dart';
-import 'package:cryptopoker/auth/register_screen.dart';
+
+import 'package:cryptopoker/screen/auth/login_screen.dart';
+import 'package:cryptopoker/screen/auth/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
 
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

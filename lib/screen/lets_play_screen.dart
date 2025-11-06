@@ -22,6 +22,13 @@ class _LetPlayViewState extends State<LetPlayView> with SingleTickerProviderStat
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _controller.repeat();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight
+    ]
+
+    );
   }
 
   @override
