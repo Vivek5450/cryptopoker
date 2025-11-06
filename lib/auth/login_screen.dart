@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:cryptopoker/auth/register_screen.dart';
+import 'package:cryptopoker/controller/auth_controller.dart';
+import 'package:cryptopoker/progress_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,8 +13,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
+  final AuthController controller = Get.put(AuthController());
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -83,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 🎴 Background image
+          // your background and login form
           Image.asset('assets/images/login.png', fit: BoxFit.cover),
 
           Center(
@@ -99,74 +101,64 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: const Color(0xFFF2A900), width: 1),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Header
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () => Get.back(),
-                            child: const Icon(
-                              Icons.arrow_back_outlined,
-                              color: Color(0xFFF2A900),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          const Text(
-                            "Welcome Back",
-                            style: TextStyle(
-                              color: Color(0xFFF2A900),
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      // Text fields
-                      _buildTextField(
-                        controller: _usernameController,
-                        hintText: 'Username',
-                        icon: Icons.person,
-                      ),
-                      _buildTextField(
-                        controller: _passwordController,
-                        hintText: 'Password',
-                        obscure: true,
-                        icon: Icons.lock,
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      // Buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildButton('Login', () async{
-                            await SystemChrome.setPreferredOrientations([
-                              DeviceOrientation.landscapeLeft,
-                              DeviceOrientation.landscapeRight,
-                            ]);
-                            Get.toNamed('/letsplay');
-                          }),
-                          const SizedBox(width: 16),
-                          _buildButton('Register', () {
-                            Get.to(() => const RegisterScreen());
-                          }),
-                        ],
-                      ),
-                    ],
-                  ),
+                  child: _buildLoginForm(),
                 ),
               ),
             ),
+          ),
+
+          // 👇 Loader Overlay (appears when logging in)
+          Obx(() => PokerLoader(isLoading: controller.isLoading.value)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginForm() {
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            "Welcome Back",
+            style: TextStyle(
+              color: Color(0xFFF2A900),
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 30),
+          _buildTextField(
+            controller: controller.usernameController,
+            hintText: 'Username',
+            icon: Icons.person,
+          ),
+          _buildTextField(
+            controller: controller.passwordController,
+            hintText: 'Password',
+            obscure: true,
+            icon: Icons.lock,
+          ),
+          const SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildButton('Login', () {
+                controller.login(
+                  controller.usernameController.text.trim(),
+                  controller.passwordController.text,
+                );
+              }),
+              const SizedBox(width: 16),
+              _buildButton('Register', () {
+                Get.to(() => const RegisterScreen());
+              }),
+            ],
           ),
         ],
       ),
     );
   }
+
 }

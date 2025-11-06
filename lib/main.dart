@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 void main(){
+
   runApp(const MyApp());
 }
 
