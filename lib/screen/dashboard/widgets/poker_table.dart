@@ -38,7 +38,7 @@ class PokerTable extends StatelessWidget {
                 left: pos.dx - 18,
                 top: pos.dy - 18,
                 child: Image.asset(
-                  'assets/images/img_3.png',
+                  'assets/images/chips.png',
                   width: min(size.width * 0.045, 52),
                 ),
               );
@@ -58,7 +58,7 @@ class PokerTable extends StatelessWidget {
                 left: pos.dx - 20,
                 top: pos.dy - 20,
                 child: Image.asset(
-                  'assets/images/img_3.png',
+                  'assets/images/chips.png',
                   width: min(size.width * 0.06, 56),
                 ),
               );
@@ -74,7 +74,7 @@ class PokerTable extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/images/img_3.png',
+                        'assets/images/chips.png',
                         width: min(size.width * 0.09, 110),
                       ),
                       const SizedBox(width: 5),
@@ -88,16 +88,6 @@ class PokerTable extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    'Current Pot Value',
-                    style: TextStyle(
-                      fontFamily: 'Lobster',
-                      fontSize: min(size.width * 0.03, 20),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellow.shade600,
-                    ),
                   ),
                 ],
               ),

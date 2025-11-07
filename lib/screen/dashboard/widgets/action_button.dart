@@ -5,6 +5,8 @@ class ActionButton extends StatelessWidget {
   final Color color;
   final Color textColor;
   final VoidCallback onTap;
+  final Color borderColor;
+  final String? amount;
 
   const ActionButton({
     super.key,
@@ -12,6 +14,8 @@ class ActionButton extends StatelessWidget {
     required this.color,
     required this.textColor,
     required this.onTap,
+    required this.borderColor,
+    this.amount,
   });
 
   @override
@@ -19,26 +23,34 @@ class ActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        width: 80, // ✅ consistent button width
+        height: 30, // ✅ fixed height for uniformity
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white, width: 1.2),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 5,
-              offset: const Offset(1, 2),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: textColor,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
+                color: textColor,
+              ),
+            ),
+            // 👇 Reserve space for amount (even if null)
+            if ((amount ?? '').isNotEmpty) // ✅ Safe check without !
+              Text(
+                amount!,
+                style: const TextStyle(color: Colors.white,fontSize: 9,height: 1),
+
+              ),
+          ],
         ),
       ),
     );

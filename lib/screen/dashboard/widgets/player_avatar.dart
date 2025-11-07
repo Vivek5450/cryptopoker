@@ -31,7 +31,7 @@ class PlayerAvatar extends StatelessWidget {
           child: Stack(
             alignment: Alignment.centerLeft,
             children: [
-              Image.asset('assets/images/Name & cash bar.png', height: 55),
+              Image.asset('assets/images/name_cash_bar.png', height: 45),
 
               if (isActive && isTimerActive && !isFolded)
                 Positioned(
@@ -39,8 +39,8 @@ class PlayerAvatar extends StatelessWidget {
                   child: ScaleTransition(
                     scale: zoomAnimation,
                     child: Container(
-                      width: 70,
-                      height: 70,
+                      height: 50,
+                      width: 50,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.greenAccent, width: 4),
@@ -56,10 +56,10 @@ class PlayerAvatar extends StatelessWidget {
                   ),
                 ),
 
-              Image.asset('assets/images/Male profile.png', height: 70, width: 70),
+              Image.asset('assets/images/male_profile.png', height: 50),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -68,7 +68,7 @@ class PlayerAvatar extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 12,
                       ),
                     ),
                     SizedBox(height: 2),

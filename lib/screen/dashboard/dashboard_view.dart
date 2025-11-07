@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../controller/dashboard_controller.dart';
 import 'widgets/poker_table.dart';
@@ -15,6 +16,17 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight
+    ]
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(DashboardController());
@@ -28,11 +40,11 @@ class _DashboardViewState extends State<DashboardView> {
           children: [
             const PokerTable(),
 
-            Positioned(
-              top: size.height * 0.04,
-              left: size.width / 2 - 26,
-              child: const DealerBadge(),
-            ),
+            // Positioned(
+            //   top: size.height * 0.04,
+            //   left: size.width / 2 - 26,
+            //   child: const DealerBadge(),
+            // ),
 
             for (var i = 0; i < players.length; i++)
               PlayerAvatar(

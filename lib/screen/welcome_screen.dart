@@ -31,7 +31,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         children: [
           // Background Image
           Image.asset(
-            'assets/images/img_11.png',
+            'assets/images/welcome_bg.png',
             fit: BoxFit.cover,
           ),
           // Buttons at the bottom
