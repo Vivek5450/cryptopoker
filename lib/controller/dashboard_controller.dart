@@ -43,6 +43,14 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   late AnimationController zoomController;
   late Animation<double> zoomAnimation;
 
+  var sliderValue = 1.0.obs; // current value in $
+  final double min = 1.0;
+  final double max = 100.0;
+  final double step = 10.0;
+
+  RxInt selectedIndex = 0.obs;
+
+
   final SocketService socketService = SocketService();
 
 
@@ -155,10 +163,10 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     return [
       Offset(cx - w * 0.25, cy - h * 0.38), // Player 1 (Top-left)
       Offset(cx + w * 0.12, cy - h * 0.40), // Player 2 (Top-right)
-      Offset(cx - w * 0.35, cy - h * 0.0), // Player 3 (Left mid)
-      Offset(cx + w * 0.28, cy - h * 0.0), // Player 4 (Right mid)
-      Offset(cx - w * 0.20, cy + h * 0.30), // Player 5 (Bottom-left)
-      Offset(cx + w * 0.10, cy + h * 0.29), // Player 6 (Bottom-right)
+      Offset(cx - w * 0.35, cy - h * 0.050), // Player 3 (Left mid)
+      Offset(cx + w * 0.28, cy - h * 0.050), // Player 4 (Right mid)
+      Offset(cx - w * 0.20, cy + h * 0.20), // Player 5 (Bottom-left)
+      Offset(cx + w * 0.10, cy + h * 0.20), // Player 6 (Bottom-right)
     ];
   }
 
@@ -171,10 +179,10 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     return [
       Offset(cx - w * 0.18, cy - h * 0.31), // Player 1 cards
       Offset(cx + w * 0.17, cy - h * 0.33), // Player 2 cards
-      Offset(cx - w * 0.29, cy - h * 0.15), // Player 3 cards
-      Offset(cx + w * 0.30, cy - h * 0.15), // Player 4 cards
-      Offset(cx - w * 0.15, cy + h * 0.13), // Player 5 cards
-      Offset(cx + w * 0.12, cy + h * 0.14), // Player 6 cards
+      Offset(cx - w * 0.29, cy - h * 0.20), // Player 3 cards
+      Offset(cx + w * 0.30, cy - h * 0.20), // Player 4 cards
+      Offset(cx - w * 0.15, cy + h * 0.03), // Player 5 cards
+      Offset(cx + w * 0.12, cy + h * 0.05), // Player 6 cards
     ];
   }
 
@@ -314,6 +322,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     socketService.close();
     audio.dispose();
     zoomController.dispose();
+    sliderValue.value=10.0;
     super.onClose();
   }
 
@@ -330,6 +339,22 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
 
   void sendMessage(dynamic data) {
     socketService.send(data);
+  }
+
+  void increase() {
+    if (sliderValue.value + step <= max) {
+      sliderValue.value += step;
+    }
+  }
+
+  void decrease() {
+    if (sliderValue.value - step >= min) {
+      sliderValue.value -= step;
+    }
+  }
+
+  void setPercentage(double percent) {
+    sliderValue.value = (max * percent).clamp(min, max);
   }
 
 }

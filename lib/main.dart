@@ -1,4 +1,3 @@
-import 'package:cryptopoker/screen/welcome_screen.dart';
 import 'package:cryptopoker/screen/dashboard/dashboard_view.dart';
 import 'package:cryptopoker/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Crypto Poker Demo',
       getPages: [
-        GetPage(name: '/welcomescreen', page: () => const WelcomeScreen()),
         GetPage(name: '/dashboard', page: () => const DashboardView()),
       ],
       home: SplashScreen(),

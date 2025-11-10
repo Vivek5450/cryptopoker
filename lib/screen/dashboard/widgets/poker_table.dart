@@ -64,7 +64,7 @@ class PokerTable extends StatelessWidget {
               );
             }),
 
-          // 💰 Pot display after chips are in
+         /* // 💰 Pot display after chips are in
           if (controller.potShown.value)
             Center(
               child: Column(
@@ -91,7 +91,7 @@ class PokerTable extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+            ),*/
         ],
       );
     });
