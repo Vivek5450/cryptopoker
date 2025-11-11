@@ -43,12 +43,16 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   late AnimationController zoomController;
   late Animation<double> zoomAnimation;
 
+  RxList<String> communityCards =<String>[].obs;
+  RxInt revealStage = 0.obs;
+
   var sliderValue = 1.0.obs; // current value in $
   final double min = 1.0;
   final double max = 100.0;
   final double step = 10.0;
 
   RxInt selectedIndex = 0.obs;
+  RxInt completedTurns = 0.obs;
 
 
   final SocketService socketService = SocketService();
@@ -88,6 +92,48 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
         play('tick.mp3');
       }
     });
+  }
+  void revealNextCommunityCards() {
+    switch (revealStage.value) {
+      case 0:
+        _revealFlop();
+        break;
+      case 1:
+        _revealTurn();
+        break;
+      case 2:
+        _revealRiver();
+        break;
+      default:
+        debugPrint("✅ All community cards revealed!");
+    }
+  }
+
+  void _revealFlop() {
+    if (communityCards.isEmpty) {
+      play('cards_flip.mp3');
+      communityCards.addAll(['card1', 'card2', 'card3']); // placeholder
+      revealStage.value = 1;
+      debugPrint("🃏 FLOP revealed!");
+    }
+  }
+
+  void _revealTurn() {
+    if (communityCards.length == 3) {
+      play('cards_flip.mp3');
+      communityCards.add('card4');
+      revealStage.value = 2;
+      debugPrint("🃏 TURN revealed!");
+    }
+  }
+
+  void _revealRiver() {
+    if (communityCards.length == 4) {
+      play('cards_flip.mp3');
+      communityCards.add('card5');
+      revealStage.value = 3;
+      debugPrint("🃏 RIVER revealed!");
+    }
   }
 
   void startChips() {
@@ -222,13 +268,23 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
       }
       if (nextIndex == currentIndex) break;
     }
+    completedTurns++;
+
+    final activePlayers = totalPlayers - playerFolded.where((f) => f).length;
+    if(completedTurns.value >= activePlayers){
+      print('::::=>All player turns get over');
+      completedTurns.value=0;
+      revealNextCommunityCards();
+    }
     activePlayerIndex.value = clockwiseOrder[nextIndex];
     startTurn(activePlayerIndex.value);
   }
+
+
+
   void foldPlayer(int index) {
     if (index < 0 || index >= totalPlayers) return;
     if (playerFolded[index]) return;
-
     playerFolded[index] = true;
     playerPacked[index] = true; // 👈 hide cards too
     play('cards_flip.mp3');

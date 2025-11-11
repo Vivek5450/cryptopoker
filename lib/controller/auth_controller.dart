@@ -42,5 +42,31 @@ RxBool isLoading = false.obs;
     }
   }
 
+  Future<void> sendOtp(String email) async {
+    if (isLoading.value) return; // prevent multiple taps
+    isLoading.value = true;
+
+    final body = {"email": email};
+
+    try {
+      final responseJson = await _authRepo.sendOtp(body);
+      //final loginResponse = LoginResponseModel.fromJson(responseJson);
+
+     /* if (loginResponse.code == 200 && loginResponse.data != null) {
+        final data = loginResponse.data!;
+        await TokenStorage.saveTokens(data.token ?? '', data.refreshToken ?? '');
+        await TokenStorage.saveUser(data.toJson());
+        debugPrint("✅ Login successful for: ${data.username}");
+
+        Get.offAllNamed('/letsplay');
+      } else {
+        debugPrint("❌ Login failed: ${loginResponse.message}");
+      }*/
+    } catch (e) {
+      debugPrint("❌ Login exception: $e");
+    } finally {
+      isLoading.value = false; // stop loader no matter what
+    }
+  }
 
 }

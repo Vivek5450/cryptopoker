@@ -10,4 +10,13 @@ class AuthRepository {
     final response = await _apiClient.post(AppUrls.login, body,includeAuth: false);
     return response;
   }
+  Future<dynamic> registerUser(Map<String, dynamic> body) async {
+    final response = await _apiClient.post(AppUrls.register, body,includeAuth: false);
+    return response;
+  }
+  Future<dynamic> sendOtp(Map<String, dynamic> body) async {
+    final response = await _apiClient.post(AppUrls.sendOtp, body,includeAuth: false);
+    return response;
+  }
+
 }

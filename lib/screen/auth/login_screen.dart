@@ -3,6 +3,7 @@ import 'package:cryptopoker/screen/auth/register_screen.dart';
 import 'package:cryptopoker/controller/auth_controller.dart';
 import 'package:cryptopoker/progress_loader.dart';
 import 'package:cryptopoker/screen/dashboard/dashboard_view.dart';
+import 'package:cryptopoker/screen/lobby/lobby_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -115,12 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 icon: 'assets/images/password.png',
               ),
               SizedBox(height: 40),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildButton('Sign in', () {
-                   Get.to(()=>DashboardView());
+                   Get.to(()=>LobbyView());
                   }),
                   _buildButton('Register', () {
                     Get.to(()=>RegisterScreen());

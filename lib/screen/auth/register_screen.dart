@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cryptopoker/controller/auth_controller.dart';
 import 'package:cryptopoker/screen/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,11 +12,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+
+  final AuthController controller =Get.put(AuthController());
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   @override
   void dispose() {
     _usernameController.dispose();
@@ -106,48 +108,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: [
           // 🎴 Background image
           Image.asset('assets/images/bg.png', fit: BoxFit.cover),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/Logo.png', height: 90),
-              SizedBox(height: 40),
-              _buildTextField(
-                controller: _usernameController,
-                hintText: 'Email',
-                icon: 'assets/images/email.png',
-              ),
-              SizedBox(height: 10),
-              _buildTextField(
-                controller: _usernameController,
-                hintText: 'Username',
-                icon: 'assets/images/user.png',
-              ),
-              SizedBox(height: 10),
-              _buildTextField(
-                controller: _passwordController,
-                hintText: 'Password',
-                icon: 'assets/images/password.png',
-              ),
-              SizedBox(height: 10),
-              _buildTextField(
-                controller: _confirmPasswordController,
-                hintText: 'Confirm Password',
-                icon: 'assets/images/password.png',
-              ),
-              SizedBox(height: 40),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildButton('Sign in', () {
-                    Get.to(()=>LoginScreen());
-                  }),
-                  _buildButton('Sign up', () {
-                    Get.to(()=>RegisterScreen());
-                  }),
-                ],
-              ),
-            ],
+      Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/Logo.png', height: 90),
+                SizedBox(height: 40),
+                _buildTextField(
+                  controller: _usernameController,
+                  hintText: 'Email',
+                  icon: 'assets/images/email.png',
+                ),
+                SizedBox(height: 10,),
+                _buildButton('Send Otp', (){
+                  controller.sendOtp(_usernameController.text.trim());
+                }),
+                SizedBox(height: 10),
+                _buildTextField(
+                  controller: _nicknameController,
+                  hintText: 'Username',
+                  icon: 'assets/images/user.png',
+                ),
+                SizedBox(height: 10),
+                _buildTextField(
+                  controller: _passwordController,
+                  hintText: 'Password',
+                  icon: 'assets/images/password.png',
+                ),
+                SizedBox(height: 10),
+                _buildTextField(
+                  controller: _confirmPasswordController,
+                  hintText: 'Confirm Password',
+                  icon: 'assets/images/password.png',
+                ),
+                SizedBox(height: 40),
+            
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildButton('Sign in', () {
+                      Get.to(()=>LoginScreen());
+                    }),
+                    _buildButton('Sign up', () {
+                      Get.to(()=>RegisterScreen());
+                    }),
+                  ],
+                ),
+              ],
           ),
         ],
       ),
