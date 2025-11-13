@@ -207,8 +207,8 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     final h = size.height;
 
     return [
-      Offset(cx - w * 0.25, cy - h * 0.38), // Player 1 (Top-left)
-      Offset(cx + w * 0.12, cy - h * 0.40), // Player 2 (Top-right)
+      Offset(cx - w * 0.25, cy - h * 0.30), // Player 1 (Top-left)
+      Offset(cx + w * 0.12, cy - h * 0.30), // Player 2 (Top-right)
       Offset(cx - w * 0.35, cy - h * 0.050), // Player 3 (Left mid)
       Offset(cx + w * 0.28, cy - h * 0.050), // Player 4 (Right mid)
       Offset(cx - w * 0.20, cy + h * 0.20), // Player 5 (Bottom-left)
@@ -223,12 +223,12 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     final h = size.height;
 
     return [
-      Offset(cx - w * 0.18, cy - h * 0.31), // Player 1 cards
-      Offset(cx + w * 0.17, cy - h * 0.33), // Player 2 cards
-      Offset(cx - w * 0.29, cy - h * 0.20), // Player 3 cards
-      Offset(cx + w * 0.30, cy - h * 0.20), // Player 4 cards
-      Offset(cx - w * 0.15, cy + h * 0.03), // Player 5 cards
-      Offset(cx + w * 0.12, cy + h * 0.05), // Player 6 cards
+      Offset(cx - w * 0.22, cy - h * 0.45), // Player 1 cards
+      Offset(cx + w * 0.15, cy - h * 0.45), // Player 2 cards
+      Offset(cx - w * 0.32, cy - h * 0.20), // Player 3 cards
+      Offset(cx + w * 0.31, cy - h * 0.20), // Player 4 cards
+      Offset(cx - w * 0.17, cy + h * 0.03), // Player 5 cards
+      Offset(cx + w * 0.13, cy + h * 0.05), // Player 6 cards
     ];
   }
 

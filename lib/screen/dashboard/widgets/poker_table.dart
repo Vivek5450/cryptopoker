@@ -18,105 +18,113 @@ class PokerTable extends StatelessWidget {
       final betT = controller.betChipProgress.value;
       final chipsFlying = controller.isChipAnimating.value;
       final cards = controller.communityCards;
-      return  Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset('assets/images/table.png', fit: BoxFit.cover),
-            ),
+      return  SizedBox.expand(
 
-            // 🟢 Initial Chip Collection Animation
-            if (controller.chipsLaid.value)
-              ...List.generate(players.length, (i) {
-                final begin = players[i];
-                final end = center;
-                final t = Curves.easeInOutBack.transform(controller.chipProgress.value);
-                final pos = Offset(
-                  begin.dx + (end.dx - begin.dx) * t,
-                  begin.dy + (end.dy - begin.dy) * t,
-                );
-                return Positioned(
-                  left: pos.dx - 18,
-                  top: pos.dy - 18,
-                  child: Image.asset(
-                    'assets/images/chips.png',
-                    width: min(size.width * 0.045, 52),
-                  ),
-                );
-              }),
-
-            // 🟡 Bet Animation (player → pot)
-            if (chipsFlying)
-              Builder(builder: (_) {
-                final start = players[activeIndex];
-                final end = center;
-                final t = Curves.easeInOut.transform(betT);
-                final pos = Offset(
-                  start.dx + (end.dx - start.dx) * t,
-                  start.dy + (end.dy - start.dy) * t,
-                );
-                return Positioned(
-                  left: pos.dx - 20,
-                  top: pos.dy - 20,
-                  child: Image.asset(
-                    'assets/images/chips.png',
-                    width: min(size.width * 0.06, 56),
-                  ),
-                );
-              }),
-        // 🃏 Community Cards (Flop, Turn, River)
-
-
-
-              // Position community cards in the center of the poker table
-               Positioned(
-                top: size.height * 0.28, // adjust vertical placement if needed
-                left: size.width * 0.6 - (cards.length * 35), // center horizontally
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: cards.map((card) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      child: Image.asset(
-                        'assets/images/spades/Q_face.png', // for now single image
-                      width: 30,
-                      ),
-                    );
-                  }).toList(),
+        child: Stack(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: Image.asset(
+                  'assets/images/table.png',
+                  fit: BoxFit.fill,
                 ),
-              )
+              ),
 
-
-
-
-           /* // 💰 Pot display after chips are in
-            if (controller.potShown.value)
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/chips.png',
-                          width: min(size.width * 0.09, 110),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          '\$${controller.potValue.value.toStringAsFixed(0)}',
-                          style: TextStyle(
-                            fontFamily: 'Lobster',
-                            fontSize: min(size.width * 0.03, 28),
-                            fontWeight: FontWeight.bold,
-                            color: Colors.yellow.shade600,
-                          ),
-                        ),
-                      ],
+              // 🟢 Initial Chip Collection Animation
+              if (controller.chipsLaid.value)
+                ...List.generate(players.length, (i) {
+                  final begin = players[i];
+                  final end = center;
+                  final t = Curves.easeInOutBack.transform(controller.chipProgress.value);
+                  final pos = Offset(
+                    begin.dx + (end.dx - begin.dx) * t,
+                    begin.dy + (end.dy - begin.dy) * t,
+                  );
+                  return Positioned(
+                    left: pos.dx - 18,
+                    top: pos.dy - 18,
+                    child: Image.asset(
+                      'assets/images/chips.png',
+                      width: min(size.width * 0.045, 52),
                     ),
-                  ],
-                ),
-              ),*/
-          ],
+                  );
+                }),
+
+              // 🟡 Bet Animation (player → pot)
+              if (chipsFlying)
+                Builder(builder: (_) {
+                  final start = players[activeIndex];
+                  final end = center;
+                  final t = Curves.easeInOut.transform(betT);
+                  final pos = Offset(
+                    start.dx + (end.dx - start.dx) * t,
+                    start.dy + (end.dy - start.dy) * t,
+                  );
+                  return Positioned(
+                    left: pos.dx - 20,
+                    top: pos.dy - 20,
+                    child: Image.asset(
+                      'assets/images/chips.png',
+                      width: min(size.width * 0.06, 56),
+                    ),
+                  );
+                }),
+          // 🃏 Community Cards (Flop, Turn, River)
+
+
+
+                // Position community cards in the center of the poker table
+                 Positioned(
+                  top: size.height * 0.28, // adjust vertical placement if needed
+                  left: size.width * 0.6 - (cards.length * 35), // center horizontally
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: cards.map((card) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: Image.asset(
+                          'assets/images/spades/Q_face.png', // for now single image
+                        width: 30,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )
+
+
+
+
+             /* // 💰 Pot display after chips are in
+              if (controller.potShown.value)
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/chips.png',
+                            width: min(size.width * 0.09, 110),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            '\$${controller.potValue.value.toStringAsFixed(0)}',
+                            style: TextStyle(
+                              fontFamily: 'Lobster',
+                              fontSize: min(size.width * 0.03, 28),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.yellow.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),*/
+            ],
+        ),
       );
     });
   }
