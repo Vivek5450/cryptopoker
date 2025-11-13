@@ -375,7 +375,6 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     _dealTimer.cancel();
     _flipTimer.cancel();
     _packTimer.cancel();
-    socketService.close();
     audio.dispose();
     zoomController.dispose();
     sliderValue.value=10.0;
@@ -383,19 +382,11 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   }
 
   Future<void> connectSocket() async {
-    final token = await TokenStorage.getToken();
-
     await socketService.initSocket(
-      'ws://157.245.212.69/ws', // your backend socket endpoint
-      query: {'token': token},
+      'ws://157.245.212.69/ws', // your backend WebSocket endpoint
     );
-
-
   }
 
-  void sendMessage(dynamic data) {
-    socketService.send(data);
-  }
 
   void increase() {
     if (sliderValue.value + step <= max) {

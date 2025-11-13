@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cryptopoker/controller/auth_controller.dart';
 import 'package:cryptopoker/screen/auth/login_screen.dart';
+import 'package:cryptopoker/screen/auth/verify_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -71,27 +72,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildButton(String label, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color.fromARGB(255, 190, 37, 35), // light red (top)
-              Color.fromARGB(255, 144, 20, 22),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color.fromARGB(255, 190, 37, 35), // light red (top)
+                Color.fromARGB(255, 144, 20, 22),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            borderRadius: BorderRadius.circular(15),
           ),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
+          child: Padding(
+            padding: const EdgeInsets.symmetric( vertical: 15),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         ),
@@ -108,52 +114,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: [
           // 🎴 Background image
           Image.asset('assets/images/bg.png', fit: BoxFit.cover),
-      Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/Logo.png', height: 90),
-                SizedBox(height: 40),
-                _buildTextField(
-                  controller: _usernameController,
-                  hintText: 'Email',
-                  icon: 'assets/images/email.png',
+
+          // 🔹 Keeps everything centered even when scroll appears
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/Logo.png', height: 90),
+                        const SizedBox(height: 40),
+                        _buildTextField(
+                          controller: _usernameController,
+                          hintText: 'Email',
+                          icon: 'assets/images/email.png',
+                        ),
+                        const SizedBox(height: 10),
+                        _buildTextField(
+                          controller: _nicknameController,
+                          hintText: 'Username',
+                          icon: 'assets/images/user.png',
+                        ),
+                        const SizedBox(height: 10),
+                        _buildTextField(
+                          controller: _passwordController,
+                          hintText: 'Password',
+                          icon: 'assets/images/password.png',
+                        ),
+                        const SizedBox(height: 10),
+                        _buildTextField(
+                          controller: _confirmPasswordController,
+                          hintText: 'Confirm Password',
+                          icon: 'assets/images/password.png',
+                        ),
+                        const SizedBox(height: 40),
+                        _buildButton('Sign up', () {
+                          Get.to(() => const VerifyOtp());
+                        }),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
+                  ),
                 ),
-                SizedBox(height: 10,),
-                _buildButton('Send Otp', (){
-                  controller.sendOtp(_usernameController.text.trim());
-                }),
-                SizedBox(height: 10),
-                _buildTextField(
-                  controller: _nicknameController,
-                  hintText: 'Username',
-                  icon: 'assets/images/user.png',
-                ),
-                SizedBox(height: 10),
-                _buildTextField(
-                  controller: _passwordController,
-                  hintText: 'Password',
-                  icon: 'assets/images/password.png',
-                ),
-                SizedBox(height: 10),
-                _buildTextField(
-                  controller: _confirmPasswordController,
-                  hintText: 'Confirm Password',
-                  icon: 'assets/images/password.png',
-                ),
-                SizedBox(height: 40),
-            
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildButton('Sign in', () {
-                      Get.to(()=>LoginScreen());
-                    }),
-                    _buildButton('Sign up', () {
-                      Get.to(()=>RegisterScreen());
-                    }),
-                  ],
-                ),
-              ],
+              );
+            },
           ),
         ],
       ),

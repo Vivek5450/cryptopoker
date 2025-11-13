@@ -17,11 +17,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Keep splash in portrait mode
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    Future.delayed(Duration(seconds: 3),(){
-      Get.offAll(()=>LoginScreen());
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    Future.delayed(Duration(seconds: 4), () {
+      Get.offAll(() => LoginScreen());
     });
   }
 
@@ -35,16 +33,19 @@ class _SplashScreenState extends State<SplashScreen> {
   //   }
   // }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SizedBox.expand(
-        child: Image(
-          image: AssetImage('assets/images/splash_screen.png'),
-          fit: BoxFit.cover,
-        ),
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset('assets/images/splash_bg.png', fit: BoxFit.cover),
+          Center(
+            child: Image.asset(
+              'assets/gif/splash_gif.gif',
+            ),
+          ),
+        ],
       ),
     );
   }

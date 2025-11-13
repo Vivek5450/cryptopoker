@@ -115,13 +115,23 @@ class _LobbyViewState extends State<LobbyView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Balance \$45.43',
+              RichText(
                 textScaleFactor: 1.0,
-                style: TextStyle(
-                  color: Colors.greenAccent,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+                text: const TextSpan(
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Balance ',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    TextSpan(
+                      text: '\$45.43',
+                      style: TextStyle(color: Color.fromARGB(255,141, 230,148)),
+                    ),
+                  ],
                 ),
               ),
               Row(
@@ -159,8 +169,11 @@ class _LobbyViewState extends State<LobbyView> {
           children: [
             SizedBox(width: 20,),
             Text('NAME',style: TextStyle(color: Colors.white),),
-            SizedBox(width: 80,),
-            Text('BLINDS',style: TextStyle(color: Colors.white),)
+            SizedBox(width: 50,),
+            Text('BLINDS',style: TextStyle(color: Colors.white),),
+            SizedBox(width: 55,),
+            Image.asset('assets/images/seat.png',height: 15,),
+            Image.asset('assets/images/arrow.png',height: 5,)
           ],
         ),
       ),
@@ -176,23 +189,29 @@ class _LobbyViewState extends State<LobbyView> {
             children: [
               Row(
                 children: [
-                  SizedBox(width: 20,),
+                  SizedBox(width: 15,),
                  Column(
                    children: [
                      Text('Jack Randy',style: TextStyle(color: Colors.white),),
                    ],
                  ),
-                  SizedBox(width: 50,),
+                  SizedBox(width: 30,),
                   Column(
                     children: [
                       Text('\$ 0.25/0.500',style: TextStyle(color: Colors.white),),
                     ],
                   ),
-                SizedBox(width: 40,),
+                  SizedBox(width: 30,),
+                  Column(
+                    children: [
+                      Text('5/7',style: TextStyle(color: Colors.white),),
+                    ],
+                  ),
+                SizedBox(width: 20,),
                 Column(
                   children: [
                     GestureDetector(
-                        onTap: ()=>Get.to(()=>DashboardView()),
+                        onTap: ()=>Get.to(()=>DashboardView())  ,
                         child: Image.asset('assets/images/lets_play.png',height: 20,)),
                   ],
                 )

@@ -63,27 +63,32 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildButton(String label, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color.fromARGB(255, 190, 37, 35), // light red (top)
-              Color.fromARGB(255, 144, 20, 22),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color.fromARGB(255, 190, 37, 35), // light red (top)
+                Color.fromARGB(255, 144, 20, 22),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            borderRadius: BorderRadius.circular(15),
           ),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         ),
@@ -114,18 +119,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: controller.passwordController,
                 hintText: 'Password',
                 icon: 'assets/images/password.png',
+                obscure: true,
+              ),
+              SizedBox(height: 5),
+              Text(
+                'Forget Password?',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 249, 95, 95),
+                  fontSize: 16,
+                ),
               ),
               SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildButton('Sign in', () {
-                   Get.to(()=>LobbyView());
-                  }),
-                  _buildButton('Register', () {
-                    Get.to(()=>RegisterScreen());
-                  }),
-                ],
+              _buildButton('Sign in', () {
+                //controller.login(controller.usernameController.text.trim(), controller.passwordController.text.trim());
+                Get.to(() => LobbyView());
+              }),
+              SizedBox(height: 40),
+              GestureDetector(
+                onTap: (){
+                  Get.to(()=>RegisterScreen());
+                },
+                child: Text(
+                  'Don\'t have an Account?',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ],
           ),

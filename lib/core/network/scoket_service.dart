@@ -4,24 +4,21 @@ import 'dart:convert';
 class SocketService {
   late IOWebSocketChannel channel;
 
-  Future<void> initSocket(String baseUrl, {Map<String, dynamic>? query}) async {
-    final token = query?['token'];
-    final uri = Uri.parse('$baseUrl?token=$token');
-
-    print('🌐 Connecting to WebSocket: $uri');
+  Future<void> initSocket(String baseUrl) async {
+    print('🌐 Connecting to WebSocket (no token): $baseUrl');
 
     try {
-      channel = IOWebSocketChannel.connect(uri);
-      print('✅ WebSocket connected successfully to $uri');
+      channel = IOWebSocketChannel.connect(Uri.parse(baseUrl));
+      print('✅ Connected successfully to $baseUrl');
 
-      // Listen for incoming messages
       channel.stream.listen(
             (message) {
-          print('📩 [SOCKET MESSAGE]');
+          print('\n📩 [SOCKET MESSAGE RECEIVED]');
           try {
             final decoded = jsonDecode(message);
-            print(const JsonEncoder.withIndent('  ').convert(decoded));
-          } catch (e) {
+            final formatted = const JsonEncoder.withIndent('  ').convert(decoded);
+            print(formatted);
+          } catch (_) {
             print('Raw message: $message');
           }
         },
@@ -37,18 +34,9 @@ class SocketService {
     }
   }
 
-  void send(dynamic data) {
-    try {
-      final jsonData = jsonEncode(data);
-      print('🚀 Sending data → $jsonData');
-      channel.sink.add(jsonData);
-    } catch (e) {
-      print('⚠️ Error sending data: $e');
-    }
-  }
-
   void close() {
     print('🔌 Closing WebSocket connection...');
     channel.sink.close();
   }
 }
+

@@ -19,7 +19,7 @@ class PokerLoader extends StatelessWidget {
         Center(
           child: SizedBox(
             child: Image.asset(
-              'assets/images/progess_loader.gif', // 🔹 replace with your gif path
+              'assets/gif/progess_loader.gif', // 🔹 replace with your gif path
               fit: BoxFit.contain,
               height: 150,
             ),

@@ -1,6 +1,7 @@
 import 'package:cryptopoker/core/network/api_response.dart';
 import 'package:cryptopoker/model/login_response_model.dart';
 import 'package:cryptopoker/repository/auth_repository.dart';
+import 'package:cryptopoker/screen/lobby/lobby_view.dart';
 import 'package:cryptopoker/token_storage/token_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +32,7 @@ RxBool isLoading = false.obs;
         await TokenStorage.saveUser(data.toJson());
         debugPrint("✅ Login successful for: ${data.username}");
 
-        Get.offAllNamed('/letsplay');
+        Get.offAll(()=>LobbyView());
       } else {
         debugPrint("❌ Login failed: ${loginResponse.message}");
       }
