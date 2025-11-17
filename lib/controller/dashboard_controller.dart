@@ -28,17 +28,17 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   final packProgress = 0.0.obs;
   RxInt activePlayerIndex = 0.obs; // Tracks whose turn it is
   RxInt turnCountdown = 10.obs;    // Example: 15 seconds per turn
-  final int totalPlayers = 6;
+  final int totalPlayers = 7;
   final AudioPlayer audio = AudioPlayer();
-  final List<int> clockwiseOrder = [0, 1, 3, 5, 4, 2];
+  final List<int> clockwiseOrder = [0, 2, 4, 6, 5, 3,1];
   late Timer _countdownTimer;
   late Timer _chipTimer;
   late Timer _dealTimer;
   late Timer _flipTimer;
   late Timer _packTimer;
 
-  RxList<bool> playerFolded = List.generate(6, (_) => false).obs;
-  RxList<bool> playerPacked = List.generate(6, (_) => false).obs;
+  RxList<bool> playerFolded = List.generate(7, (_) => false).obs;
+  RxList<bool> playerPacked = List.generate(7, (_) => false).obs;
 
   late AnimationController zoomController;
   late Animation<double> zoomAnimation;
@@ -199,18 +199,17 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   void packPlayer5() {
     foldPlayer(4);
   }
-
   List<Offset> playerPositions(Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
     final w = size.width;
     final h = size.height;
-
     return [
-      Offset(cx - w * 0.25, cy - h * 0.30), // Player 1 (Top-left)
-      Offset(cx + w * 0.12, cy - h * 0.30), // Player 2 (Top-right)
-      Offset(cx - w * 0.35, cy - h * 0.050), // Player 3 (Left mid)
-      Offset(cx + w * 0.28, cy - h * 0.050), // Player 4 (Right mid)
+      Offset(cx - w * 0.02, cy - h * 0.33),
+      Offset(cx - w * 0.30, cy - h * 0.30), // Player 1 (Top-left)
+      Offset(cx + w * 0.20, cy - h * 0.30), // Player 2 (Top-right)
+      Offset(cx - w * 0.35, cy - h * 0.0), // Player 3 (Left mid)
+      Offset(cx + w * 0.28, cy - h * 0.020), // Player 4 (Right mid)
       Offset(cx - w * 0.20, cy + h * 0.20), // Player 5 (Bottom-left)
       Offset(cx + w * 0.10, cy + h * 0.20), // Player 6 (Bottom-right)
     ];
@@ -221,12 +220,12 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     final cy = size.height / 2;
     final w = size.width;
     final h = size.height;
-
     return [
-      Offset(cx - w * 0.22, cy - h * 0.45), // Player 1 cards
-      Offset(cx + w * 0.15, cy - h * 0.45), // Player 2 cards
-      Offset(cx - w * 0.32, cy - h * 0.20), // Player 3 cards
-      Offset(cx + w * 0.31, cy - h * 0.20), // Player 4 cards
+      Offset(cx - w * -0.01, cy - h * 0.48),//Middle Player
+      Offset(cx - w * 0.27, cy - h * 0.45), // Player 1 cards
+      Offset(cx + w * 0.23, cy - h * 0.45), // Player 2 cards
+      Offset(cx - w * 0.32, cy - h * 0.15), // Player 3 cards
+      Offset(cx + w * 0.31, cy - h * 0.17), // Player 4 cards
       Offset(cx - w * 0.17, cy + h * 0.03), // Player 5 cards
       Offset(cx + w * 0.13, cy + h * 0.05), // Player 6 cards
     ];

@@ -22,15 +22,12 @@ class PokerTable extends StatelessWidget {
 
         child: Stack(
             children: [
-              SizedBox(
-                width: double.infinity,
-                height: double.infinity,
+              Positioned.fill(
                 child: Image.asset(
                   'assets/images/table.png',
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
-
               // 🟢 Initial Chip Collection Animation
               if (controller.chipsLaid.value)
                 ...List.generate(players.length, (i) {

@@ -40,7 +40,7 @@ class _PlayerCardsState extends State<PlayerCards> {
             );
             final pos2 = Offset(pos1.dx + cardWidth * 0.6, pos1.dy);
 
-            bool showFront = (i == 4);
+            bool showFront = (i == 5);
 
             return Stack(
               children: [
@@ -58,7 +58,7 @@ class _PlayerCardsState extends State<PlayerCards> {
                   left: pos2.dx,
                   top: pos2.dy,
                   child: Transform.rotate(
-                    angle: (i != 4 && !showFront) ? 0.15 : 0.0,
+                    angle: (i != 5 && !showFront) ? 0.15 : 0.0,
                     alignment:
                         Alignment.topCenter, // 👈 rotates around the top edge
                     child: Image.asset(
@@ -73,9 +73,9 @@ class _PlayerCardsState extends State<PlayerCards> {
             );
           }),
 
-          if (controller.activePlayerIndex.value == 4 &&
-              !controller.playerFolded[4] &&
-              !controller.playerPacked[4])
+          if (controller.activePlayerIndex.value == 5 &&
+              !controller.playerFolded[5] &&
+              !controller.playerPacked[5])
             Stack(
               children: [
                 Positioned(
