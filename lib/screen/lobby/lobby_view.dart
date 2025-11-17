@@ -15,15 +15,12 @@ class _LobbyViewState extends State<LobbyView> {
     return Scaffold(
       body: SafeArea(
         top: false,
-        bottom: false,// allows background to touch the top of the screen
+        bottom: false, // allows background to touch the top of the screen
         child: Stack(
           fit: StackFit.expand,
           children: [
             // Background image
-            Image.asset(
-              'assets/images/lobby_bg.png',
-              fit: BoxFit.cover,
-            ),
+            Image.asset('assets/images/lobby_bg.png', fit: BoxFit.cover),
 
             // Content (Header + others)
             Column(
@@ -57,10 +54,7 @@ class _LobbyViewState extends State<LobbyView> {
               onPressed: () {
                 Get.back();
               },
-              icon: Image.asset(
-                'assets/images/back.png',
-                height: iconSize,
-              ),
+              icon: Image.asset('assets/images/back.png', height: iconSize),
             ),
           ),
         ),
@@ -83,7 +77,7 @@ class _LobbyViewState extends State<LobbyView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: 1,),
+                SizedBox(width: 1),
                 Image.asset(
                   'assets/images/Logo.png',
                   height: MediaQuery.of(context).size.height * 0.028,
@@ -97,7 +91,7 @@ class _LobbyViewState extends State<LobbyView> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(width: 1,)
+                SizedBox(width: 1),
               ],
             ),
           ),
@@ -107,21 +101,14 @@ class _LobbyViewState extends State<LobbyView> {
         Container(
           color: const Color.fromARGB(255, 53, 53, 53),
           height: statusBarHeight + 70,
-          padding: EdgeInsets.only(
-            top: statusBarHeight + 3,
-            right: 8,
-            left: 8,
-          ),
+          padding: EdgeInsets.only(top: statusBarHeight + 3, right: 8, left: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               RichText(
                 textScaleFactor: 1.0,
                 text: const TextSpan(
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
                   children: [
                     TextSpan(
                       text: 'Balance ',
@@ -129,7 +116,9 @@ class _LobbyViewState extends State<LobbyView> {
                     ),
                     TextSpan(
                       text: '\$45.43',
-                      style: TextStyle(color: Color.fromARGB(255,141, 230,148)),
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 141, 230, 148),
+                      ),
                     ),
                   ],
                 ),
@@ -160,27 +149,27 @@ class _LobbyViewState extends State<LobbyView> {
     );
   }
 
-  Widget _buildTitle(){
+  Widget _buildTitle() {
     return Container(
       color: Colors.black,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6,horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
         child: Row(
           children: [
-            SizedBox(width: 20,),
-            Text('NAME',style: TextStyle(color: Colors.white),),
-            SizedBox(width: 50,),
-            Text('BLINDS',style: TextStyle(color: Colors.white),),
-            SizedBox(width: 55,),
-            Image.asset('assets/images/seat.png',height: 15,),
-            Image.asset('assets/images/arrow.png',height: 5,)
+            SizedBox(width: 20),
+            Text('NAME', style: TextStyle(color: Colors.white)),
+            SizedBox(width: 50),
+            Text('BLINDS', style: TextStyle(color: Colors.white)),
+            SizedBox(width: 55),
+            Image.asset('assets/images/seat.png', height: 15),
+            Image.asset('assets/images/arrow.png', height: 5),
           ],
         ),
       ),
     );
   }
 
-  Widget _playerBlindList(){
+  Widget _playerBlindList() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Column(
@@ -189,37 +178,44 @@ class _LobbyViewState extends State<LobbyView> {
             children: [
               Row(
                 children: [
-                  SizedBox(width: 15,),
-                 Column(
-                   children: [
-                     Text('Jack Randy',style: TextStyle(color: Colors.white),),
-                   ],
-                 ),
-                  SizedBox(width: 30,),
+                  SizedBox(width: 15),
                   Column(
                     children: [
-                      Text('\$ 0.25/0.500',style: TextStyle(color: Colors.white),),
+                      Text('Jack Randy', style: TextStyle(color: Colors.white)),
                     ],
                   ),
-                  SizedBox(width: 30,),
+                  SizedBox(width: 30),
                   Column(
                     children: [
-                      Text('5/7',style: TextStyle(color: Colors.white),),
+                      Text(
+                        '\$ 0.25/0.500',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ],
                   ),
-                SizedBox(width: 20,),
-                Column(
-                  children: [
-                    GestureDetector(
-                        onTap: ()=>Get.to(()=>DashboardView())  ,
-                        child: Image.asset('assets/images/lets_play.png',height: 20,)),
-                  ],
-                )
+                  SizedBox(width: 30),
+                  Column(
+                    children: [
+                      Text('5/7', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  SizedBox(width: 20),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Get.to(() => DashboardView()),
+                        child: Image.asset(
+                          'assets/images/lets_play.png',
+                          height: 20,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
-              )
+              ),
             ],
           ),
-          Divider(thickness: 0.1,)
+          Divider(thickness: 0.1),
         ],
       ),
     );

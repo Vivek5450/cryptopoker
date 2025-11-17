@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-class DashboardController extends GetxController with GetTickerProviderStateMixin {
+class DashboardController extends GetxController
+    with GetTickerProviderStateMixin {
   final countdown = 5.obs;
   final showCountdown = true.obs;
   final chipsLaid = false.obs;
@@ -16,9 +17,9 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   final player5Packed = false.obs;
   RxBool timerActive = false.obs;
 
-  final RxDouble potValue = 0.0.obs;           // total pot amount
-  final RxDouble betChipProgress = 0.0.obs;    // controls chip animation
-  final RxBool isChipAnimating = false.obs;    // prevent multiple animations
+  final RxDouble potValue = 0.0.obs; // total pot amount
+  final RxDouble betChipProgress = 0.0.obs; // controls chip animation
+  final RxBool isChipAnimating = false.obs; // prevent multiple animations
   final RxDouble currentBet = 0.0.obs;
 
   RxInt currentRound = 1.obs;
@@ -27,10 +28,10 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   final flipProgress = 0.0.obs;
   final packProgress = 0.0.obs;
   RxInt activePlayerIndex = 0.obs; // Tracks whose turn it is
-  RxInt turnCountdown = 10.obs;    // Example: 15 seconds per turn
+  RxInt turnCountdown = 10.obs; // Example: 15 seconds per turn
   final int totalPlayers = 7;
   final AudioPlayer audio = AudioPlayer();
-  final List<int> clockwiseOrder = [0, 2, 4, 6, 5, 3,1];
+  final List<int> clockwiseOrder = [0, 2, 4, 6, 5, 3, 1];
   late Timer _countdownTimer;
   late Timer _chipTimer;
   late Timer _dealTimer;
@@ -43,7 +44,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   late AnimationController zoomController;
   late Animation<double> zoomAnimation;
 
-  RxList<String> communityCards =<String>[].obs;
+  RxList<String> communityCards = <String>[].obs;
   RxInt revealStage = 0.obs;
 
   var sliderValue = 1.0.obs; // current value in $
@@ -54,9 +55,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   RxInt selectedIndex = 0.obs;
   RxInt completedTurns = 0.obs;
 
-
   final SocketService socketService = SocketService();
-
 
   @override
   void onInit() {
@@ -68,9 +67,10 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
       duration: const Duration(milliseconds: 800),
     )..repeat(reverse: true);
 
-    zoomAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(parent: zoomController, curve: Curves.easeInOut),
-    );
+    zoomAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: zoomController, curve: Curves.easeInOut));
   }
 
   Future<void> play(String file) async {
@@ -93,6 +93,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
       }
     });
   }
+
   void revealNextCommunityCards() {
     switch (revealStage.value) {
       case 0:
@@ -140,7 +141,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     chipsLaid.value = true;
     play('chips_collect.mp3');
     potShown.value = false; // hide pot during chip movement
-    potValue.value = 0.0;   // reset before collecting
+    potValue.value = 0.0; // reset before collecting
 
     _chipTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       chipProgress.value += 0.025;
@@ -163,7 +164,6 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
       }
     });
   }
-
 
   void startDeal() {
     cardsDealt.value = true;
@@ -199,6 +199,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   void packPlayer5() {
     foldPlayer(4);
   }
+
   List<Offset> playerPositions(Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
@@ -221,16 +222,15 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     final w = size.width;
     final h = size.height;
     return [
-      Offset(cx - w * -0.01, cy - h * 0.48),//Middle Player
-      Offset(cx - w * 0.27, cy - h * 0.45), // Player 1 cards
-      Offset(cx + w * 0.23, cy - h * 0.45), // Player 2 cards
-      Offset(cx - w * 0.32, cy - h * 0.15), // Player 3 cards
-      Offset(cx + w * 0.31, cy - h * 0.17), // Player 4 cards
-      Offset(cx - w * 0.17, cy + h * 0.03), // Player 5 cards
-      Offset(cx + w * 0.13, cy + h * 0.05), // Player 6 cards
+      Offset(cx - w * -0.002, cy - h * 0.48), //Middle Player
+      Offset(cx - w * 0.28, cy - h * 0.45), // Player 1 cards
+      Offset(cx + w * 0.22, cy - h * 0.45), // Player 2 cards
+      Offset(cx - w * 0.33, cy - h * 0.15), // Player 3 cards
+      Offset(cx + w * 0.30, cy - h * 0.17), // Player 4 cards
+      Offset(cx - w * 0.18, cy + h * 0.03), // Player 5 cards
+      Offset(cx + w * 0.12, cy + h * 0.05), // Player 6 cards
     ];
   }
-
 
   void startTurn(int playerIndex) {
     activePlayerIndex.value = playerIndex;
@@ -270,16 +270,14 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     completedTurns++;
 
     final activePlayers = totalPlayers - playerFolded.where((f) => f).length;
-    if(completedTurns.value >= activePlayers){
+    if (completedTurns.value >= activePlayers) {
       print('::::=>All player turns get over');
-      completedTurns.value=0;
+      completedTurns.value = 0;
       revealNextCommunityCards();
     }
     activePlayerIndex.value = clockwiseOrder[nextIndex];
     startTurn(activePlayerIndex.value);
   }
-
-
 
   void foldPlayer(int index) {
     if (index < 0 || index >= totalPlayers) return;
@@ -293,6 +291,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
       moveToNextPlayer();
     }
   }
+
   void bet(int playerIndex, double amount) {
     if (isChipAnimating.value || playerFolded[playerIndex]) return;
 
@@ -306,7 +305,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     _chipTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       betChipProgress.value += 0.04;
       if (betChipProgress.value >= 1.0) {
-         betChipProgress.value = 1.0;
+        betChipProgress.value = 1.0;
         timer.cancel();
         potValue.value += amount;
         isChipAnimating.value = false;
@@ -318,7 +317,6 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   void raiseBet(int playerIndex, double amount) {
     bet(playerIndex, amount); // for now, same animation but higher amount
   }
-
 
   void check(int playerIndex) {
     if (playerFolded[playerIndex]) return;
@@ -376,7 +374,7 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
     _packTimer.cancel();
     audio.dispose();
     zoomController.dispose();
-    sliderValue.value=10.0;
+    sliderValue.value = 10.0;
     super.onClose();
   }
 
@@ -385,7 +383,6 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
       'ws://157.245.212.69/ws', // your backend WebSocket endpoint
     );
   }
-
 
   void increase() {
     if (sliderValue.value + step <= max) {
@@ -402,5 +399,4 @@ class DashboardController extends GetxController with GetTickerProviderStateMixi
   void setPercentage(double percent) {
     sliderValue.value = (max * percent).clamp(min, max);
   }
-
 }

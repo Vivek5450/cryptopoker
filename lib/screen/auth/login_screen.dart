@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/images/Logo.png', height: 90),
-              SizedBox(height: 40),
+              SizedBox(height: 100),
               _buildTextField(
                 controller: controller.usernameController,
                 hintText: 'Email',
@@ -134,10 +134,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 //controller.login(controller.usernameController.text.trim(), controller.passwordController.text.trim());
                 Get.to(() => LobbyView());
               }),
-              SizedBox(height: 40),
+              SizedBox(height: 80),
               GestureDetector(
-                onTap: (){
-                  Get.to(()=>RegisterScreen());
+                onTap: () {
+                  Get.to(() => RegisterScreen());
                 },
                 child: Text(
                   'Don\'t have an Account?',

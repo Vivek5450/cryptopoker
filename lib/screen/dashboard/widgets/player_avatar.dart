@@ -2,7 +2,6 @@ import 'package:cryptopoker/controller/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class PlayerAvatar extends StatelessWidget {
   final int index;
   final Offset position;
@@ -31,16 +30,16 @@ class PlayerAvatar extends StatelessWidget {
           child: Stack(
             alignment: Alignment.centerLeft,
             children: [
-              Image.asset('assets/images/name_cash_bar.png', height: 40),
+              Image.asset('assets/images/name_cash_bar.png', height: 35),
 
-            if (isActive && isTimerActive && !isFolded)
+              if (isActive && isTimerActive && !isFolded)
                 Positioned(
                   left: 0,
                   child: ScaleTransition(
                     scale: zoomAnimation,
                     child: Container(
                       height: 48,
-                      width: 47,
+                      width: 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.greenAccent, width: 4),
@@ -55,10 +54,13 @@ class PlayerAvatar extends StatelessWidget {
                     ),
                   ),
                 ),
-              Image.asset('assets/images/male_profile.png', height: 47),
+              Image.asset('assets/images/male_profile.png', height: 40),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 52,
+                  vertical: 20,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

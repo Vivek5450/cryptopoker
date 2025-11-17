@@ -16,17 +16,16 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight
-    ]
-    );
+      DeviceOrientation.landscapeRight,
+    ]);
   }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(DashboardController());
@@ -36,7 +35,7 @@ class _DashboardViewState extends State<DashboardView> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Obx(
-            () => Stack(
+        () => Stack(
           children: [
             const PokerTable(),
 
@@ -45,15 +44,13 @@ class _DashboardViewState extends State<DashboardView> {
             //   left: size.width / 2 - 26,
             //   child: const DealerBadge(),
             // ),
-
+            const PlayerCards(),
             for (var i = 0; i < players.length; i++)
               PlayerAvatar(
                 index: i,
                 position: players[i],
                 zoomAnimation: controller.zoomAnimation,
               ),
-
-            const PlayerCards(),
 
             if (controller.showCountdown.value)
               Center(
