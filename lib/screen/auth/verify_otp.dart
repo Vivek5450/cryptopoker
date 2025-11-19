@@ -1,11 +1,27 @@
 import 'package:cryptopoker/controller/auth_controller.dart';
 import 'package:cryptopoker/progress_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
-class VerifyOtp extends StatelessWidget {
+class VerifyOtp extends StatefulWidget {
   const VerifyOtp({super.key});
+
+  @override
+  State<VerifyOtp> createState() => _VerifyOtpState();
+}
+
+class _VerifyOtpState extends State<VerifyOtp> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +66,18 @@ class VerifyOtp extends StatelessWidget {
                               numberOfFields: 6,
                               showFieldAsBox: true,
                               borderColor: Color.fromARGB(255, 190, 37, 35),
-                              focusedBorderColor: Color.fromARGB(255, 190, 37, 35),
-                              enabledBorderColor: Color.fromARGB(255, 190, 37, 35),
+                              focusedBorderColor: Color.fromARGB(
+                                255,
+                                190,
+                                37,
+                                35,
+                              ),
+                              enabledBorderColor: Color.fromARGB(
+                                255,
+                                190,
+                                37,
+                                35,
+                              ),
                               borderRadius: BorderRadius.circular(12),
                               fieldWidth: 45,
                               fieldHeight: 45,
@@ -89,8 +115,7 @@ class VerifyOtp extends StatelessWidget {
             },
           ),
         ],
-      )
-
+      ),
     );
   }
 

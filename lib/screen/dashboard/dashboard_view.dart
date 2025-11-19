@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../controller/dashboard_controller.dart';
 import 'widgets/poker_table.dart';
-import 'widgets/dealer_badge.dart';
 import 'widgets/player_avatar.dart';
 import 'widgets/player_cards.dart';
 
@@ -16,14 +15,16 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
+  late final DashboardController controller;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    controller = Get.put(DashboardController(), permanent: false);
   }
 
   @override
@@ -67,5 +68,16 @@ class _DashboardViewState extends State<DashboardView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // if you want controller removed automatically: Get.delete<DashboardController>();
+    // But if you want it alive while navigating, keep it and let Get manage lifecycle
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
   }
 }

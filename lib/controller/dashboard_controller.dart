@@ -1,13 +1,115 @@
+// dashboard_controller.dart (COMPLETE FILE)
 import 'dart:async';
 import 'dart:math';
 import 'package:cryptopoker/core/network/scoket_service.dart';
-import 'package:cryptopoker/token_storage/token_storage.dart';
 import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class DashboardController extends GetxController
     with GetTickerProviderStateMixin {
+  // card assets (constant)
+  static const List<String> allCardImagesConst = [
+    // Clubs (clover)
+    'assets/images/cards/clover_a.png',
+    'assets/images/cards/clover_two.png',
+    'assets/images/cards/clover_three.png',
+    'assets/images/cards/clover_four.png',
+    'assets/images/cards/clover_five.png',
+    'assets/images/cards/clover_six.png',
+    'assets/images/cards/clover_seven.png',
+    'assets/images/cards/clover_eight.png',
+    'assets/images/cards/clover_nine.png',
+    'assets/images/cards/clover_ten.png',
+    'assets/images/cards/clover_j.png',
+    'assets/images/cards/clover_q.png',
+    'assets/images/cards/clover_k.png',
+
+    // Diamonds
+    'assets/images/cards/diamond_A.png',
+    'assets/images/cards/diamond_two.png',
+    'assets/images/cards/diamond_three.png',
+    'assets/images/cards/diamond_four.png',
+    'assets/images/cards/diamond_five.png',
+    'assets/images/cards/diamond_six.png',
+    'assets/images/cards/diamond_seven.png',
+    'assets/images/cards/diamond_eight.png',
+    'assets/images/cards/diamond_nine.png',
+    'assets/images/cards/diamond_ten.png',
+    'assets/images/cards/diamond_J.png',
+    'assets/images/cards/diamond_Q.png',
+    'assets/images/cards/diamond_K.png',
+
+    // Hearts
+    'assets/images/cards/heart_A.png',
+    'assets/images/cards/heart_two.png',
+    'assets/images/cards/heart_three.png',
+    'assets/images/cards/heart_four.png',
+    'assets/images/cards/heart_five.png',
+    'assets/images/cards/heart_six.png',
+    'assets/images/cards/heart_seven.png',
+    'assets/images/cards/heart_eight.png',
+    'assets/images/cards/heart_nine.png',
+    'assets/images/cards/heart_ten.png',
+    'assets/images/cards/heart_J.png',
+    'assets/images/cards/heart_Q.png',
+    'assets/images/cards/heart_K.png',
+
+    // Spades / leaf in your naming
+    'assets/images/cards/leaf_A.png',
+    'assets/images/cards/leaf_two.png',
+    'assets/images/cards/leaf_three.png',
+    'assets/images/cards/leaf_four.png',
+    'assets/images/cards/leaf_five.png',
+    'assets/images/cards/leaf_six.png',
+    'assets/images/cards/leaf_seven.png',
+    'assets/images/cards/leaf_eight.png',
+    'assets/images/cards/leaf_nine.png',
+    'assets/images/cards/leaf_ten.png',
+    'assets/images/cards/leaf_J.png',
+    'assets/images/cards/leaf_Q.png',
+    'assets/images/cards/leaf_K.png',
+  ];
+
+  /// the runtime deck (shuffled copy of allCardImagesConst)
+  final RxList<String> deck = <String>[].obs;
+
+  /// draw random card and remove from deck (refills & reshuffles when empty)
+  String drawRandomCard() {
+    if (deck.isEmpty) {
+      // refill and shuffle
+      deck.addAll(allCardImagesConst);
+      deck.shuffle();
+    }
+    final idx = Random().nextInt(deck.length);
+    final card = deck.removeAt(idx);
+    return card;
+  }
+
+  // These will store 2 random cards (player's hole cards)
+  final RxString card1 = ''.obs;
+  final RxString card2 = ''.obs;
+
+  // CALL THIS to generate two new random cards (no duplicates)
+  void getRandomCards() {
+    // ensure deck has enough cards; if not, refill & shuffle
+    if (deck.length < 2) {
+      deck.clear();
+      deck.addAll(allCardImagesConst);
+      deck.shuffle();
+    }
+    card1.value = drawRandomCard();
+    card2.value = drawRandomCard();
+  }
+
+  // NEW: First & Second Serve Flags
+  RxBool isFirstServe = true.obs;
+  RxBool isSecondServe = false.obs;
+  RxBool secondDealInProgress = false.obs;
+  final secondDealProgress = 0.0.obs;
+  Timer? _secondDealTimer;
+
+  // existing game variables
   final countdown = 5.obs;
   final showCountdown = true.obs;
   final chipsLaid = false.obs;
@@ -17,9 +119,9 @@ class DashboardController extends GetxController
   final player5Packed = false.obs;
   RxBool timerActive = false.obs;
 
-  final RxDouble potValue = 0.0.obs; // total pot amount
-  final RxDouble betChipProgress = 0.0.obs; // controls chip animation
-  final RxBool isChipAnimating = false.obs; // prevent multiple animations
+  final RxDouble potValue = 0.0.obs;
+  final RxDouble betChipProgress = 0.0.obs;
+  final RxBool isChipAnimating = false.obs;
   final RxDouble currentBet = 0.0.obs;
 
   RxInt currentRound = 1.obs;
@@ -27,16 +129,19 @@ class DashboardController extends GetxController
   final dealProgress = 0.0.obs;
   final flipProgress = 0.0.obs;
   final packProgress = 0.0.obs;
-  RxInt activePlayerIndex = 0.obs; // Tracks whose turn it is
-  RxInt turnCountdown = 10.obs; // Example: 15 seconds per turn
+  RxInt activePlayerIndex = 0.obs;
+  RxInt turnCountdown = 10.obs;
   final int totalPlayers = 7;
   final AudioPlayer audio = AudioPlayer();
   final List<int> clockwiseOrder = [0, 2, 4, 6, 5, 3, 1];
-  late Timer _countdownTimer;
-  late Timer _chipTimer;
-  late Timer _dealTimer;
-  late Timer _flipTimer;
-  late Timer _packTimer;
+
+  // make timers nullable to avoid cancel errors if not created
+  Timer? _countdownTimer;
+  Timer? _chipTimer;
+  Timer? _dealTimer;
+  Timer? _flipTimer;
+  Timer? _packTimer;
+  Timer? _turnTimer;
 
   RxList<bool> playerFolded = List.generate(7, (_) => false).obs;
   RxList<bool> playerPacked = List.generate(7, (_) => false).obs;
@@ -47,7 +152,7 @@ class DashboardController extends GetxController
   RxList<String> communityCards = <String>[].obs;
   RxInt revealStage = 0.obs;
 
-  var sliderValue = 1.0.obs; // current value in $
+  var sliderValue = 1.0.obs;
   final double min = 1.0;
   final double max = 100.0;
   final double step = 10.0;
@@ -61,16 +166,24 @@ class DashboardController extends GetxController
   void onInit() {
     super.onInit();
     connectSocket();
-    startCountdown();
+
+    // seed deck initially
+    deck.clear();
+    deck.addAll(allCardImagesConst);
+    deck.shuffle();
+
+    // Animation controller created but not auto-repeating here
     zoomController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
-    )..repeat(reverse: true);
-
+    );
     zoomAnimation = Tween<double>(
       begin: 1.0,
       end: 1.2,
     ).animate(CurvedAnimation(parent: zoomController, curve: Curves.easeInOut));
+
+    // start initial countdown flow
+    startCountdown();
   }
 
   Future<void> play(String file) async {
@@ -82,10 +195,17 @@ class DashboardController extends GetxController
   }
 
   void startCountdown() {
+    // cancel any existing before creating new
+    _countdownTimer?.cancel();
+    countdown.value = 5;
+    showCountdown.value = true;
+
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (countdown.value <= 1) {
         t.cancel();
         showCountdown.value = false;
+
+        // small delay then start the chip collect
         Future.delayed(const Duration(milliseconds: 300), startChips);
       } else {
         countdown.value--;
@@ -113,35 +233,42 @@ class DashboardController extends GetxController
   void _revealFlop() {
     if (communityCards.isEmpty) {
       play('cards_flip.mp3');
-      communityCards.addAll(['card1', 'card2', 'card3']); // placeholder
+
+      communityCards.add(drawRandomCard());
+      communityCards.add(drawRandomCard());
+      communityCards.add(drawRandomCard());
+
       revealStage.value = 1;
-      debugPrint("🃏 FLOP revealed!");
+      debugPrint("🃏 FLOP revealed! -> ${communityCards.join(', ')}");
     }
   }
 
   void _revealTurn() {
     if (communityCards.length == 3) {
       play('cards_flip.mp3');
-      communityCards.add('card4');
+      communityCards.add(drawRandomCard());
       revealStage.value = 2;
-      debugPrint("🃏 TURN revealed!");
+      debugPrint("🃏 TURN revealed! -> ${communityCards.join(', ')}");
     }
   }
 
   void _revealRiver() {
     if (communityCards.length == 4) {
       play('cards_flip.mp3');
-      communityCards.add('card5');
+      communityCards.add(drawRandomCard());
       revealStage.value = 3;
-      debugPrint("🃏 RIVER revealed!");
+      debugPrint("🃏 RIVER revealed! -> ${communityCards.join(', ')}");
     }
   }
 
   void startChips() {
     chipsLaid.value = true;
     play('chips_collect.mp3');
-    potShown.value = false; // hide pot during chip movement
-    potValue.value = 0.0; // reset before collecting
+    potShown.value = false;
+    potValue.value = 0.0;
+
+    _chipTimer?.cancel();
+    chipProgress.value = 0.0;
 
     _chipTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       chipProgress.value += 0.025;
@@ -149,16 +276,13 @@ class DashboardController extends GetxController
         chipProgress.value = 1.0;
         timer.cancel();
 
-        // 💰 After chip collection finishes, add $20 from each player
         const double chipAmountPerPlayer = 20.0;
         potValue.value = totalPlayers * chipAmountPerPlayer;
 
-        // 🕐 Add a small delay for realism before showing the pot
         Future.delayed(const Duration(milliseconds: 300), () {
           chipsLaid.value = false;
           potShown.value = true;
 
-          // Continue to next step after a small pause
           Future.delayed(const Duration(milliseconds: 400), startDeal);
         });
       }
@@ -170,13 +294,57 @@ class DashboardController extends GetxController
     play('deal_cards_1.mp3');
     dealProgress.value = 0.0;
 
+    _dealTimer?.cancel();
+
     _dealTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       dealProgress.value += 0.02;
       if (dealProgress.value >= 1.0) {
         dealProgress.value = 1.0;
         timer.cancel();
-        // ✅ Start the first player's turn ONLY after dealing completes
-        startTurn(0);
+
+        // draw player's hole cards BEFORE first player's turn
+        getRandomCards();
+
+        // First serve complete, ekhon 2 second wait then second serve
+        if (isFirstServe.value) {
+          isFirstServe.value = false;
+
+          // 2 second wait korar por second deal start
+          Future.delayed(const Duration(seconds: 2), () {
+            startSecondDeal();
+          });
+        } else {
+          // Normal flow - start turn (2nd round onwards)
+          startTurn(clockwiseOrder.isNotEmpty ? clockwiseOrder[0] : 0);
+        }
+      }
+    });
+  }
+
+  // NEW METHOD - Second deal animation
+  void startSecondDeal() {
+    secondDealInProgress.value = true;
+    play('deal_cards_1.mp3'); // Same sound or different sound
+    secondDealProgress.value = 0.0;
+
+    _secondDealTimer?.cancel();
+
+    _secondDealTimer = Timer.periodic(const Duration(milliseconds: 16), (
+      timer,
+    ) {
+      secondDealProgress.value += 0.02;
+      if (secondDealProgress.value >= 1.0) {
+        secondDealProgress.value = 1.0;
+        timer.cancel();
+
+        // Second serve complete
+        isSecondServe.value = true;
+        secondDealInProgress.value = false;
+
+        // Ekhon player turn start
+        Future.delayed(const Duration(milliseconds: 300), () {
+          startTurn(clockwiseOrder.isNotEmpty ? clockwiseOrder[0] : 0);
+        });
       }
     });
   }
@@ -187,6 +355,7 @@ class DashboardController extends GetxController
     player5Revealed.value = true;
     flipProgress.value = 0.0;
 
+    _flipTimer?.cancel();
     _flipTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       flipProgress.value += 0.05;
       if (flipProgress.value >= 1.0) {
@@ -197,7 +366,8 @@ class DashboardController extends GetxController
   }
 
   void packPlayer5() {
-    foldPlayer(4);
+    // user/player 5 -> fold index 5
+    foldPlayer(5);
   }
 
   List<Offset> playerPositions(Size size) {
@@ -207,12 +377,12 @@ class DashboardController extends GetxController
     final h = size.height;
     return [
       Offset(cx - w * 0.02, cy - h * 0.33),
-      Offset(cx - w * 0.30, cy - h * 0.30), // Player 1 (Top-left)
-      Offset(cx + w * 0.20, cy - h * 0.30), // Player 2 (Top-right)
-      Offset(cx - w * 0.35, cy - h * 0.0), // Player 3 (Left mid)
-      Offset(cx + w * 0.28, cy - h * 0.020), // Player 4 (Right mid)
-      Offset(cx - w * 0.20, cy + h * 0.20), // Player 5 (Bottom-left)
-      Offset(cx + w * 0.10, cy + h * 0.20), // Player 6 (Bottom-right)
+      Offset(cx - w * 0.30, cy - h * 0.30),
+      Offset(cx + w * 0.25, cy - h * 0.30),
+      Offset(cx - w * 0.35, cy - h * 0.0),
+      Offset(cx + w * 0.28, cy - h * 0.020),
+      Offset(cx - w * 0.20, cy + h * 0.20),
+      Offset(cx + w * 0.10, cy + h * 0.20),
     ];
   }
 
@@ -222,60 +392,84 @@ class DashboardController extends GetxController
     final w = size.width;
     final h = size.height;
     return [
-      Offset(cx - w * -0.002, cy - h * 0.48), //Middle Player
-      Offset(cx - w * 0.28, cy - h * 0.45), // Player 1 cards
-      Offset(cx + w * 0.22, cy - h * 0.45), // Player 2 cards
-      Offset(cx - w * 0.33, cy - h * 0.15), // Player 3 cards
-      Offset(cx + w * 0.30, cy - h * 0.17), // Player 4 cards
-      Offset(cx - w * 0.18, cy + h * 0.03), // Player 5 cards
-      Offset(cx + w * 0.12, cy + h * 0.05), // Player 6 cards
+      Offset(cx - w * -0.002, cy - h * 0.48),
+      Offset(cx - w * 0.28, cy - h * 0.45),
+      Offset(cx + w * 0.27, cy - h * 0.45),
+      Offset(cx - w * 0.33, cy - h * 0.15),
+      Offset(cx + w * 0.30, cy - h * 0.17),
+      Offset(cx - w * 0.19, cy + h * 0.03),
+      Offset(cx + w * 0.12, cy + h * 0.05),
     ];
   }
 
   void startTurn(int playerIndex) {
+    // Cancel any existing turn timer
+    _turnTimer?.cancel();
+
     activePlayerIndex.value = playerIndex;
-    turnCountdown.value = 10; // reset countdown
+    turnCountdown.value = 10;
     timerActive.value = true;
 
-    Future.doWhile(() async {
-      if (turnCountdown.value > 0 && timerActive.value) {
-        await Future.delayed(const Duration(seconds: 1));
+    // start zoom animation for active player
+    zoomController.repeat(reverse: true);
+
+    // start a periodic timer for the player's turn countdown
+    _turnTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!timerActive.value) {
+        timer.cancel();
+        zoomController.stop();
+        return;
+      }
+
+      if (turnCountdown.value > 0) {
         turnCountdown.value--;
-        zoomController.repeat(reverse: true);
-        return true; // continue loop
+        // play tick sound if you want
+        play('tick.mp3');
       } else {
+        // Time up: stop timer, stop zoom, and move to next player
+        timer.cancel();
         timerActive.value = false;
-        moveToNextPlayer(); // Automatically shift turn
-        return false; // stop loop
+        zoomController.stop();
+        moveToNextPlayer();
       }
     });
   }
 
   void endTurn() {
     timerActive.value = false;
+    _turnTimer?.cancel();
     zoomController.stop();
   }
 
   void moveToNextPlayer() {
     final currentIndex = clockwiseOrder.indexOf(activePlayerIndex.value);
     int nextIndex = (currentIndex + 1) % clockwiseOrder.length;
-    while (playerFolded[clockwiseOrder[nextIndex]]) {
+
+    // find next non-folded player
+    int attempts = 0;
+    while (playerFolded[clockwiseOrder[nextIndex]] &&
+        attempts < clockwiseOrder.length) {
       nextIndex = (nextIndex + 1) % clockwiseOrder.length;
+      attempts++;
       if (playerFolded.where((f) => !f).length <= 1) {
+        // one or zero players remain -> end round
         endRound();
         return;
       }
-      if (nextIndex == currentIndex) break;
     }
-    completedTurns++;
+
+    // increment completed turns safely
+    completedTurns.value++;
 
     final activePlayers = totalPlayers - playerFolded.where((f) => f).length;
     if (completedTurns.value >= activePlayers) {
-      print('::::=>All player turns get over');
+      debugPrint('::::=>All player turns get over');
       completedTurns.value = 0;
       revealNextCommunityCards();
     }
+
     activePlayerIndex.value = clockwiseOrder[nextIndex];
+    // start next player's turn
     startTurn(activePlayerIndex.value);
   }
 
@@ -283,7 +477,7 @@ class DashboardController extends GetxController
     if (index < 0 || index >= totalPlayers) return;
     if (playerFolded[index]) return;
     playerFolded[index] = true;
-    playerPacked[index] = true; // 👈 hide cards too
+    playerPacked[index] = true;
     play('cards_flip.mp3');
     debugPrint("Player $index folded");
 
@@ -300,8 +494,8 @@ class DashboardController extends GetxController
     play('chips_collect.mp3');
 
     betChipProgress.value = 0.0;
+    _chipTimer?.cancel();
 
-    // Animate chips from player → pot
     _chipTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       betChipProgress.value += 0.04;
       if (betChipProgress.value >= 1.0) {
@@ -315,20 +509,20 @@ class DashboardController extends GetxController
   }
 
   void raiseBet(int playerIndex, double amount) {
-    bet(playerIndex, amount); // for now, same animation but higher amount
+    bet(playerIndex, amount);
   }
 
   void check(int playerIndex) {
     if (playerFolded[playerIndex]) return;
-    play('check_tap.m4a'); // 👂 play a subtle sound for check
+    play('check_tap.m4a');
     debugPrint("Player $playerIndex checked");
     moveToNextPlayer();
   }
 
   void endRound() {
     timerActive.value = false;
+    _turnTimer?.cancel();
     zoomController.stop();
-    //play('winner.mp3'); // optional: add a win sound
     potShown.value = false;
     Get.snackbar(
       "Round ${currentRound.value}",
@@ -355,23 +549,43 @@ class DashboardController extends GetxController
     cardsDealt.value = false;
 
     showCountdown.value = true;
-    startCountdown(); // restart the whole cycle
+    // reset flags for players
+    playerFolded = List.generate(totalPlayers, (_) => false).obs;
+    playerPacked = List.generate(totalPlayers, (_) => false).obs;
+    completedTurns.value = 0;
+    revealStage.value = 0;
+    communityCards.clear();
+
+    secondDealProgress.value = 0.0;
+    secondDealInProgress.value = false;
+    // Note: isFirstServe and isSecondServe remain false after first round
+
+    // refill & shuffle the deck for the next round
+    deck.clear();
+    deck.addAll(allCardImagesConst);
+    deck.shuffle();
+
+    // clear player's hole cards
+    card1.value = '';
+    card2.value = '';
+
+    startCountdown();
   }
 
   void resetTimer() {
-    if (_countdownTimer.isActive) {
-      _countdownTimer.cancel();
-    }
+    _countdownTimer?.cancel();
     startCountdown();
   }
 
   @override
   void onClose() {
-    _countdownTimer.cancel();
-    _chipTimer.cancel();
-    _dealTimer.cancel();
-    _flipTimer.cancel();
-    _packTimer.cancel();
+    _countdownTimer?.cancel();
+    _chipTimer?.cancel();
+    _dealTimer?.cancel();
+    _flipTimer?.cancel();
+    _packTimer?.cancel();
+    _turnTimer?.cancel();
+    _secondDealTimer?.cancel();
     audio.dispose();
     zoomController.dispose();
     sliderValue.value = 10.0;
@@ -379,9 +593,7 @@ class DashboardController extends GetxController
   }
 
   Future<void> connectSocket() async {
-    await socketService.initSocket(
-      'ws://157.245.212.69/ws', // your backend WebSocket endpoint
-    );
+    await socketService.initSocket('ws://157.245.212.69/ws');
   }
 
   void increase() {

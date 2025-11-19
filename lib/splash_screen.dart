@@ -1,6 +1,4 @@
 import 'package:cryptopoker/screen/auth/login_screen.dart';
-import 'package:cryptopoker/screen/dashboard/dashboard_view.dart';
-import 'package:cryptopoker/token_storage/token_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +15,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Keep splash in portrait mode
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
     Future.delayed(Duration(seconds: 4), () {
       Get.offAll(() => LoginScreen());
     });

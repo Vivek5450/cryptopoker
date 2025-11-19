@@ -1,10 +1,10 @@
-import 'dart:ui';
+import 'package:cryptopoker/screen/auth/forgot_password_screen.dart';
 import 'package:cryptopoker/screen/auth/register_screen.dart';
 import 'package:cryptopoker/controller/auth_controller.dart';
 import 'package:cryptopoker/progress_loader.dart';
-import 'package:cryptopoker/screen/dashboard/dashboard_view.dart';
 import 'package:cryptopoker/screen/lobby/lobby_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -58,6 +58,15 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   Widget _buildButton(String label, VoidCallback onTap) {
@@ -122,11 +131,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscure: true,
               ),
               SizedBox(height: 5),
-              Text(
-                'Forget Password?',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 249, 95, 95),
-                  fontSize: 16,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ForgotPasswordScreen(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Forget Password?',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 249, 95, 95),
+                    fontSize: 16,
+                  ),
                 ),
               ),
               SizedBox(height: 40),

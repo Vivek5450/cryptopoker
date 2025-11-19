@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:cryptopoker/controller/dashboard_controller.dart';
-import 'package:cryptopoker/screen/dashboard/widgets/bet_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'action_button.dart';
@@ -25,53 +24,113 @@ class _PlayerCardsState extends State<PlayerCards> {
 
       return Stack(
         children: [
-          // ♠️ Card dealing animation
-          ...List.generate(cards.length, (i) {
-            if (controller.playerPacked[i]) return const SizedBox();
+          if (!controller.isSecondServe.value &&
+              !controller.secondDealInProgress.value)
+            ...List.generate(cards.length, (i) {
+              if (controller.playerPacked[i]) return const SizedBox();
 
-            final target = cards[i];
-            final start = Offset(size.width / 2, size.height * 0.08 + 20);
-            final t = Curves.easeOutBack.transform(
-              controller.dealProgress.value,
-            );
-            final pos1 = Offset(
-              start.dx + (target.dx - start.dx) * t,
-              start.dy + (target.dy - start.dy) * t,
-            );
-            final pos2 = Offset(pos1.dx + cardWidth * 0.6, pos1.dy);
+              final target = cards[i];
+              final start = Offset(size.width / 2, size.height * 0.08 + 20);
+              final t = Curves.easeOutBack.transform(
+                controller.dealProgress.value,
+              );
+              final pos1 = Offset(
+                start.dx + (target.dx - start.dx) * t,
+                start.dy + (target.dy - start.dy) * t,
+              );
+              final pos2 = Offset(pos1.dx + cardWidth * 0.6, pos1.dy);
 
-            bool showFront = (i == 5);
+              bool showFront = (i == 5);
 
-            return Stack(
-              children: [
-                Positioned(
-                  left: pos1.dx,
-                  top: pos1.dy,
-                  child: Image.asset(
-                    showFront
-                        ? 'assets/images/spades/Q_face.png'
-                        : 'assets/images/card_backward.png',
-                    width: cardWidth,
+              String cardImage1;
+              String cardImage2;
+
+              if (showFront) {
+                cardImage1 = controller.card1.value;
+                cardImage2 = controller.card2.value;
+              } else {
+                cardImage1 = 'assets/images/serve_cards/straight.png';
+                cardImage2 = 'assets/images/serve_cards/straight.png';
+              }
+
+              return Stack(
+                children: [
+                  Positioned(
+                    left: pos1.dx,
+                    top: pos1.dy,
+                    child: Image.asset(cardImage1, width: cardWidth),
                   ),
-                ),
-                Positioned(
-                  left: pos2.dx,
-                  top: pos2.dy,
-                  child: Transform.rotate(
-                    angle: (i != 5 && !showFront) ? 0.15 : 0.0,
-                    alignment:
-                        Alignment.topCenter, // 👈 rotates around the top edge
+                  // if (showFront)
+                  //   Positioned(
+                  //     left: pos2.dx,
+                  //     top: pos2.dy,
+                  //     child: Transform.rotate(
+                  //       angle: (i != 5 && !showFront) ? 0.15 : 0.0,
+                  //       alignment: Alignment.topCenter,
+                  //       child: Image.asset(cardImage2, width: cardWidth),
+                  //     ),
+                  //   ),
+                ],
+              );
+            }),
+
+          if (controller.secondDealInProgress.value ||
+              controller.isSecondServe.value)
+            ...List.generate(cards.length, (i) {
+              if (controller.playerPacked[i]) return const SizedBox();
+
+              final target = cards[i];
+              final start = Offset(size.width / 2, size.height * 0.08 + 20);
+
+              final t =
+                  controller.secondDealInProgress.value
+                      ? Curves.easeOutBack.transform(
+                        controller.secondDealProgress.value,
+                      )
+                      : 1.0;
+
+              final pos1 = Offset(
+                start.dx + (target.dx - start.dx) * t,
+                start.dy + (target.dy - start.dy) * t,
+              );
+              final pos2 = Offset(pos1.dx + cardWidth * 1.1, pos1.dy);
+
+              bool showFront = (i == 5);
+
+              String cardImage1;
+              String cardImage2;
+
+              if (showFront) {
+                cardImage1 = controller.card1.value;
+                cardImage2 = controller.card2.value;
+              } else {
+                cardImage1 = 'assets/images/serve_cards/combine.png';
+                cardImage2 = 'assets/images/serve_cards/combine.png';
+              }
+
+              return Stack(
+                children: [
+                  Positioned(
+                    left: pos1.dx,
+                    top: pos1.dy,
                     child: Image.asset(
-                      showFront
-                          ? 'assets/images/spades/Q_face.png'
-                          : 'assets/images/card_backward.png',
-                      width: cardWidth,
+                      cardImage1,
+                      width: !showFront ? 48 : cardWidth,
                     ),
                   ),
-                ),
-              ],
-            );
-          }),
+                  if (showFront)
+                    Positioned(
+                      left: pos2.dx,
+                      top: pos2.dy,
+                      child: Transform.rotate(
+                        angle: (i != 5 && !showFront) ? 0.15 : 0.0,
+                        alignment: Alignment.topCenter,
+                        child: Image.asset(cardImage2, width: cardWidth),
+                      ),
+                    ),
+                ],
+              );
+            }),
 
           if (controller.activePlayerIndex.value == 5 &&
               !controller.playerFolded[5] &&
@@ -156,9 +215,9 @@ class _PlayerCardsState extends State<PlayerCards> {
                     ],
                   ),
                 ),
-                // 🎯 Buttons Row (same as before)
+                // Buttons Row (same as before)
                 Positioned(
-                  right: size.width * 0.03, // 👈 original right spacing
+                  right: size.width * 0.03,
                   bottom: size.height * 0.01,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

@@ -17,40 +17,38 @@ class PokerTable extends StatelessWidget {
       final activeIndex = controller.activePlayerIndex.value;
       final betT = controller.betChipProgress.value;
       final chipsFlying = controller.isChipAnimating.value;
-      final cards = controller.communityCards;
-      return  SizedBox.expand(
-
+      return SizedBox.expand(
         child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/images/table.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              // 🟢 Initial Chip Collection Animation
-              if (controller.chipsLaid.value)
-                ...List.generate(players.length, (i) {
-                  final begin = players[i];
-                  final end = center;
-                  final t = Curves.easeInOutBack.transform(controller.chipProgress.value);
-                  final pos = Offset(
-                    begin.dx + (end.dx - begin.dx) * t,
-                    begin.dy + (end.dy - begin.dy) * t,
-                  );
-                  return Positioned(
-                    left: pos.dx - 18,
-                    top: pos.dy - 18,
-                    child: Image.asset(
-                      'assets/images/chips.png',
-                      width: min(size.width * 0.045, 52),
-                    ),
-                  );
-                }),
+          children: [
+            Positioned.fill(
+              child: Image.asset('assets/images/table.png', fit: BoxFit.cover),
+            ),
+            // 🟢 Initial Chip Collection Animation
+            if (controller.chipsLaid.value)
+              ...List.generate(players.length, (i) {
+                final begin = players[i];
+                final end = center;
+                final t = Curves.easeInOutBack.transform(
+                  controller.chipProgress.value,
+                );
+                final pos = Offset(
+                  begin.dx + (end.dx - begin.dx) * t,
+                  begin.dy + (end.dy - begin.dy) * t,
+                );
+                return Positioned(
+                  left: pos.dx - 18,
+                  top: pos.dy - 18,
+                  child: Image.asset(
+                    'assets/images/chips.png',
+                    width: min(size.width * 0.045, 52),
+                  ),
+                );
+              }),
 
-              // 🟡 Bet Animation (player → pot)
-              if (chipsFlying)
-                Builder(builder: (_) {
+            // 🟡 Bet Animation (player → pot)
+            if (chipsFlying)
+              Builder(
+                builder: (_) {
                   final start = players[activeIndex];
                   final end = center;
                   final t = Curves.easeInOut.transform(betT);
@@ -66,33 +64,31 @@ class PokerTable extends StatelessWidget {
                       width: min(size.width * 0.06, 56),
                     ),
                   );
-                }),
-          // 🃏 Community Cards (Flop, Turn, River)
+                },
+              ),
+            // 🃏 Community Cards (Flop, Turn, River)
 
-
-
-                // Position community cards in the center of the poker table
-                 Positioned(
-                  top: size.height * 0.28, // adjust vertical placement if needed
-                  left: size.width * 0.6 - (cards.length * 35), // center horizontally
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: cards.map((card) {
+            // Position community cards in the center of the poker table
+            // 🃏 Community Cards (Flop, Turn, River)
+            Positioned(
+              top: size.height * 0.28,
+              left: size.width * 0.6 - (controller.communityCards.length * 35),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:
+                    controller.communityCards.map((card) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: Image.asset(
-                          'assets/images/spades/Q_face.png', // for now single image
-                        width: 30,
+                          card, // ← RANDOM CARD HERE
+                          width: 55,
                         ),
                       );
                     }).toList(),
-                  ),
-                )
+              ),
+            ),
 
-
-
-
-             /* // 💰 Pot display after chips are in
+            /* // 💰 Pot display after chips are in
               if (controller.potShown.value)
                 Center(
                   child: Column(
@@ -120,10 +116,9 @@ class PokerTable extends StatelessWidget {
                     ],
                   ),
                 ),*/
-            ],
+          ],
         ),
       );
     });
   }
 }
-

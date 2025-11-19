@@ -1,10 +1,14 @@
 import 'package:cryptopoker/screen/dashboard/dashboard_view.dart';
 import 'package:cryptopoker/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-void main(){
-
+void main() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyApp());
 }
 
